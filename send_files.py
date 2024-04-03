@@ -16,10 +16,10 @@ def classifyFiles(filename):
         threading.Thread(target=watch_for_second_part,args=(filename,)).start()
 
     elif file_part == 'b':
-        first_file_name = redis_client.get(filename[:-1] + 'ab')
+        first_file_name = redis_client.get(filename[:-1] + 'ab').decode('utf-8')
         files_to_send = []
-        files_to_send.append(("files", (first_file_name, read_file(first_file_name))))
-        files_to_send.append(("files", (filename, read_file(filename))))
+        files_to_send.append(("files", (os.path.basename(first_file_name), read_file(first_file_name))))
+        files_to_send.append(("files", (os.path.basename(filename), read_file(filename))))
         response = requests.post("http://{ip}:{port}/merge_and_sign".format(ip = constant.HAPROXY_SERVER_IP,
                                                                       port = constant.HAPROXY_SERVER_PORT),
                                                                         files=files_to_send)
@@ -39,6 +39,7 @@ def save_to_redis(filename):
     redis_client.set(remove_extension(filename) + 'b', filename)
 
 def read_file(filename):
+    print(filename)
     with open(filename, "rb") as file:
             file_data = file.read()
 
