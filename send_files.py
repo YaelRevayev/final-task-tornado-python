@@ -3,9 +3,11 @@ import time
 import requests
 import threading
 import redis
-from logger import logger,error_logger
+from logger import configure_error_logger,configure_success_logger
 import constant
 
+info_logger = configure_success_logger()
+error_logger =  configure_error_logger()
 
 redis_client = redis.StrictRedis(host=constant.REDIS_HOST_IP, port=constant.REDIS_HOST_PORT, db=0)
 
@@ -24,7 +26,7 @@ def classifyFiles(filename):
                                                                       port = constant.HAPROXY_SERVER_PORT),
                                                                         files=files_to_send)
         if response.status_code == 200:
-            logger.info(f"Files '{first_file_name}' , '{filename}' sent successfully.")
+            info_logger.info(f"Files '{first_file_name}' , '{filename}' sent successfully.")
         else:
             error_logger.error(f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}")
 
@@ -33,7 +35,7 @@ def watch_for_second_part(file_a):
     if not os.path.exists(remove_extension(file_a)[:-1] + 'b'):
         if os.path.exists(file_a):
             os.remove(file_a)
-            logger.info(f"File '{file_a}' deleted - couldn't find second part of the file.")
+            info_logger.info(f"File '{file_a}' deleted - couldn't find second part of the file.")
 
 def save_to_redis(filename):
     redis_client.set(remove_extension(filename) + 'b', filename)
