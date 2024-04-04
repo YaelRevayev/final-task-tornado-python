@@ -5,11 +5,9 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 
-info_logger = configure_success_logger()
-error_logger =  configure_error_logger()
-
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
+        info_logger = configure_success_logger()
         if event.is_directory:
             return
         filename = event.src_path
@@ -17,6 +15,7 @@ class NewFileHandler(FileSystemEventHandler):
         threading.Thread(target=classifyFiles,args=(filename,)).start()
 
 def start_watchdog(directory):
+    info_logger = configure_success_logger()
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
