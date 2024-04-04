@@ -3,13 +3,12 @@ import os
 from datetime import datetime
 import shutil
 
-#reset_folder("logs")
-#reset_folder("files_output")
+
 def reset_folder(directory):
     if os.path.exists(directory):
         shutil.rmtree(directory)
         os.makedirs(directory)
-    else:
+    elif not os.path.exists(directory):
         os.makedirs(directory)
 
 def configure_error_logger():

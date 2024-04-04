@@ -10,13 +10,10 @@ def scan_directory(directory):
     for file in files:
         info_logger.info(file)
 
-def main():
+if __name__ == "__main__":
     reset_folder("logs")
     reset_folder("files_output")
     directory_to_watch = "/home/pure-ftpd-server/final-task-tornado-python"
     scan_directory(directory_to_watch)
     start_watchdog(directory_to_watch)
-
-if __name__ == "__main__":
-    main()
 
