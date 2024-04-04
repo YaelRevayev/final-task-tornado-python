@@ -11,6 +11,7 @@ global error_logger
 
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
+        global info_logger
         if event.is_directory:
             return
         filename = event.src_path
@@ -18,6 +19,7 @@ class NewFileHandler(FileSystemEventHandler):
         threading.Thread(target=classifyFiles,args=(filename,info_logger,error_logger,)).start()
 
 def start_watchdog(directory):
+    global info_logger
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
@@ -32,6 +34,7 @@ def start_watchdog(directory):
 
 
 def scan_directory(directory):
+    global info_logger
     files = os.listdir(directory)
     info_logger.info("Scanned files in directory:")                                                     
     for file in files:

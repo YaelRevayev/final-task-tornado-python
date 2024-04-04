@@ -35,6 +35,7 @@ def classifyFiles(filename,first_logger,second_logger):
             error_logger.error(f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}")
 
 def watch_for_second_part(file_a):
+    global info_logger
     time.sleep(60)
     if not os.path.exists(remove_extension(file_a)[:-1] + 'b'):
         if os.path.exists(file_a):
