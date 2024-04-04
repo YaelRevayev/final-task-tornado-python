@@ -30,9 +30,9 @@ def classifyFiles(filename,first_logger,second_logger):
                                                                       port = constant.HAPROXY_SERVER_PORT),
                                                                         files=files_to_send)
         if response.status_code == 200:
-            info_logger.info(f"Files '{first_file_name}' , '{filename}' sent successfully.")
+            info_logger.info(f"Files '{os.path.basename(first_file_name)}' , '{os.path.basename(filename)}' sent successfully.")
         else:
-            error_logger.error(f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}")
+            error_logger.error(f"Error sending files '{os.path.basename(first_file_name)}' , '{os.path.basename(filename)}': {response.status_code} {response.reason}")
 
 def watch_for_second_part(file_a):
     global info_logger

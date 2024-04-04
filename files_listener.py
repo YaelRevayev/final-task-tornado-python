@@ -6,8 +6,8 @@ from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
 
-info_logger = configure_success_logger()
-error_logger = configure_error_logger()
+global info_logger
+global error_logger
 
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
@@ -33,10 +33,13 @@ def start_watchdog(directory):
 
 def scan_directory(directory):
     files = os.listdir(directory)
-    info_logger.info("Scanned files in directory:")                                                     
+    info_logger.info("Scanned files in directory:")
     for file in files:
         info_logger.info(file)
 
 def main(directory):
+    global info_logger, error_logger
+    error_logger = configure_error_logger()
+    info_logger = configure_success_logger()
     scan_directory(directory)
     start_watchdog(directory)
