@@ -6,12 +6,11 @@ from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
 
-global info_logger
-global error_logger
+info_logger = configure_success_logger()
+error_logger = configure_error_logger()
 
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
-        global info_logger
         if event.is_directory:
             return
         filename = event.src_path
@@ -19,7 +18,6 @@ class NewFileHandler(FileSystemEventHandler):
         threading.Thread(target=classifyFiles,args=(filename,info_logger,error_logger,)).start()
 
 def start_watchdog(directory):
-    global info_logger
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
@@ -34,16 +32,11 @@ def start_watchdog(directory):
 
 
 def scan_directory(directory):
-    global info_logger
     files = os.listdir(directory)
     info_logger.info("Scanned files in directory:")                                                     
     for file in files:
         info_logger.info(file)
 
 def main(directory):
-    global info_logger
-    info_logger = configure_success_logger()
-    global error_logger
-    error_logger = configure_error_logger()
     scan_directory(directory)
     start_watchdog(directory)
