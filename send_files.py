@@ -6,12 +6,11 @@ import redis
 from logger import configure_error_logger,configure_success_logger
 import constant
 
-info_logger = configure_success_logger()
-error_logger =  configure_error_logger()
-
 redis_client = redis.StrictRedis(host=constant.REDIS_HOST_IP, port=constant.REDIS_HOST_PORT, db=0)
 
 def classifyFiles(filename):
+    info_logger = configure_success_logger()
+    error_logger =  configure_error_logger()
     file_part = remove_extension(filename)[-1]
     if  file_part == 'a':
         save_to_redis(filename)
@@ -31,6 +30,7 @@ def classifyFiles(filename):
             error_logger.error(f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}")
 
 def watch_for_second_part(file_a):
+    info_logger = configure_success_logger()
     time.sleep(60)
     if not os.path.exists(remove_extension(file_a)[:-1] + 'b'):
         if os.path.exists(file_a):

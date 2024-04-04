@@ -6,7 +6,7 @@ from logger import configure_error_logger,configure_success_logger,reset_folder
 def scan_directory(directory):
     info_logger = configure_success_logger()
     files = os.listdir(directory)
-    info_logger.info("Scanned files in directory:")
+    info_logger.info("Scanned files in directory:")                                                     
     for file in files:
         info_logger.info(file)
 
