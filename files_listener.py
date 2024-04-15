@@ -1,10 +1,12 @@
 import time
 import threading
-from logger import configure_error_logger, configure_success_logger
+from logger import configure_logger
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
+from datetime import datetime
+
 
 global info_logger
 global error_logger
@@ -57,8 +59,16 @@ def scan_directory(directory):
 
 def files_listener(directory):
     global info_logger, error_logger
-    error_logger = configure_error_logger()
-    info_logger = configure_success_logger()
+    error_logger = configure_logger(
+        "error_logger",
+        os.path.join("logs", "error_watchdog.log"),
+    )
+    info_logger = configure_logger(
+        "info_logger",
+        os.path.join(
+            "logs", f"success_watchdog{datetime.now().strftime('%Y-%m-%d')}.log"
+        ),
+    )
 
     scan_directory(directory)
     start_watchdog(directory)
