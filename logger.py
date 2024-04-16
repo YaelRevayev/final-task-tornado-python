@@ -1,10 +1,4 @@
 import logging
-import os
-
-
-def reset_folder(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
 
 
 def configure_logger(logger_name, log_file_name):
