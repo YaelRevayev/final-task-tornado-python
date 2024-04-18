@@ -60,9 +60,11 @@ def listen_for_file_expiration():
 def files_listener(directory):
     global watchdog_logger, error_logger, sender_logger
     logger_instance = LoggerSingleton()
+
     sender_logger = logger_instance.sender_logger
     error_logger = logger_instance.error_logger
     watchdog_logger = logger_instance.watchdog_logger
+    print(watchdog_logger)
 
     scan_directory(directory)
     start_watchdog(directory)
