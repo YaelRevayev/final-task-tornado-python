@@ -50,6 +50,7 @@ class LoggerSingleton:
 
     @property
     def watchdog_logger(self):
+        print(self._watchdog_logger)
         return self._watchdog_logger
 
     @property
