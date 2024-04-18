@@ -37,6 +37,7 @@ def start_watchdog(directory):
 
 def scan_directory(directory):
     files = os.listdir(directory)
+    print(watchdog_logger())
     watchdog_logger().info("Scanned files in directory:")
     for file in files:
         watchdog_logger().info(file)
