@@ -16,7 +16,7 @@ class NewFileHandler(FileSystemEventHandler):
         if event.is_directory:
             return
         filename = event.src_path
-        watchdog_logger().info(f"New file detected: {filename}")
+        watchdog_logger.info(f"New file detected: {filename}")
         threading.Thread(
             target=classifyFiles,
             args=(
@@ -31,7 +31,7 @@ def start_watchdog(directory):
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
-    watchdog_logger().info(f"Watching directory: {directory}")
+    watchdog_logger.info(f"Watching directory: {directory}")
 
     try:
         while True:
@@ -45,9 +45,9 @@ def scan_directory(directory):
     global sender_logger, error_logger, watchdog_logger
     files = os.listdir(directory)
     print(watchdog_logger())
-    watchdog_logger().info("Scanned files in directory:")
+    watchdog_logger.info("Scanned files in directory:")
     for file in files:
-        watchdog_logger().info(file)
+        watchdog_logger.info(file)
         threading.Thread(
             target=classifyFiles,
             args=(
