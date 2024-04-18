@@ -1,6 +1,6 @@
 import time
 import threading
-from logger import LoggerSingleton
+from logger import watchdog_logger
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
@@ -8,18 +8,13 @@ import os
 import subprocess
 import config
 
-global info_logger
-global error_logger
-global sender_logger
-
 
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
-        global watchdog_logger
         if event.is_directory:
             return
         filename = event.src_path
-        watchdog_logger.info(f"New file detected: {filename}")
+        watchdog_logger().info(f"New file detected: {filename}")
         threading.Thread(
             target=classifyFiles,
             args=(filename,),
@@ -27,11 +22,10 @@ class NewFileHandler(FileSystemEventHandler):
 
 
 def start_watchdog(directory):
-    global watchdog_logger
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
-    watchdog_logger.info(f"Watching directory: {directory}")
+    watchdog_logger().info(f"Watching directory: {directory}")
 
     try:
         while True:
@@ -42,11 +36,10 @@ def start_watchdog(directory):
 
 
 def scan_directory(directory):
-    global watchdog_logger
     files = os.listdir(directory)
-    watchdog_logger.info("Scanned files in directory:")
+    watchdog_logger().info("Scanned files in directory:")
     for file in files:
-        watchdog_logger.info(file)
+        watchdog_logger().info(file)
         threading.Thread(
             target=classifyFiles,
             args=(file,),
@@ -58,13 +51,5 @@ def listen_for_file_expiration():
 
 
 def files_listener(directory):
-    global watchdog_logger, error_logger, sender_logger
-    logger_instance = LoggerSingleton()
-
-    sender_logger = logger_instance.sender_logger
-    error_logger = logger_instance.error_logger
-    watchdog_logger = logger_instance.watchdog_logger
-    print(watchdog_logger)
-
     scan_directory(directory)
     start_watchdog(directory)

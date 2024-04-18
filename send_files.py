@@ -3,7 +3,7 @@ import requests
 import redis
 import config
 from file_operations import read_file, remove_extension
-from logger import LoggerSingleton
+from logger import error_logger, sender_logger
 
 redis_client = redis.StrictRedis(
     host=config.REDIS_HOST_IP, port=config.REDIS_HOST_PORT, db=0
@@ -49,9 +49,6 @@ def list_files_in_order(curr_file, first_file):
 
 
 def send_http_request(first_file_name, filename, files_to_send):
-    logger_instance = LoggerSingleton()
-    sender_logger = logger_instance.sender_logger
-    error_logger = logger_instance.error_logger
 
     response = requests.post(
         "http://{ip}:{port}/merge_and_sign".format(
@@ -60,11 +57,11 @@ def send_http_request(first_file_name, filename, files_to_send):
         files=files_to_send,
     )
     if response.status_code == 200:
-        sender_logger.info(
+        sender_logger().info(
             f"Files '{first_file_name}' , '{filename}' sent successfully."
         )
     else:
-        error_logger.error(
+        error_logger().error(
             f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}"
         )
 
