@@ -39,6 +39,7 @@ def part_a_or_b(filename):
 def list_files_in_order(curr_file, first_file):
     files_to_send = []
     file_paths = [f"files_output/{first_file}", f"files_output/{curr_file}"]
+    print(file_paths)
 
     for file_path in file_paths:
         file_name = os.path.basename(file_path)
@@ -78,4 +79,4 @@ def send_http_request(
 
 def save_to_redis(key, value):
     redis_client.set(key, value, ex=config.EXPIRY_SECONDS)
-    redis_client.expire(key, 60)
+    redis_client.expire(key, config.EXPIRY_SECONDS)
