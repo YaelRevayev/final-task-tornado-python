@@ -6,6 +6,7 @@ import config
 
 def configure_logger(logger_name, log_file_name):
     logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.INFO)
     handler = logging.FileHandler(log_file_name)
     formatter = logging.Formatter(
         "%(asctime)s - %(filename)s - %(levelname)s - %(message)s"
@@ -23,13 +24,13 @@ def create_loggers():
             f"success_transfer{datetime.now().strftime('%Y-%m-%d')}.log",
         ),
     )
-    sender_logger.setLevel(logging.INFO)
+    # sender_logger.setLevel(logging.INFO)
 
     error_logger = configure_logger(
         "error_logger",
         os.path.join(config.LOGS_FOLDER_NAME, "error_watchdog.log"),
     )
-    error_logger.setLevel(logging.ERROR)
+    # error_logger.setLevel(logging.ERROR)
 
     watchdog_logger = configure_logger(
         "info_logger",
@@ -38,5 +39,5 @@ def create_loggers():
             f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log",
         ),
     )
-    watchdog_logger.setLevel(logging.INFO)
+    # watchdog_logger.setLevel(logging.INFO)
     return (sender_logger, watchdog_logger, error_logger)
