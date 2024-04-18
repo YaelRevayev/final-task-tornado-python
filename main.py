@@ -1,9 +1,13 @@
 from files_listener import files_listener, listen_for_file_expiration
 import config
+import threading
 
 
 def main():
-    # listen_for_file_expiration()
+    threading.Thread(
+        target=listen_for_file_expiration,
+        args=(),
+    ).start()
     files_listener(config.DIRECTORY_TO_WATCH)
 
 
