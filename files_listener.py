@@ -5,14 +5,16 @@ from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
 import subprocess
+from logger import create_loggers
 import config
 
-global sender_logger, error_logger, watchdog_logger
+global sender_logger
+global error_logger
+global watchdog_logger
 
 
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
-        global watchdog_logger
         if event.is_directory:
             return
         filename = event.src_path
@@ -28,7 +30,6 @@ class NewFileHandler(FileSystemEventHandler):
 
 
 def start_watchdog(directory):
-    global watchdog_logger
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
@@ -43,7 +44,6 @@ def start_watchdog(directory):
 
 
 def scan_directory(directory):
-    global watchdog_logger
     files = os.listdir(directory)
     print(watchdog_logger)
     watchdog_logger.info("Scanned files in directory:")
@@ -63,10 +63,8 @@ def listen_for_file_expiration():
     subprocess.run(["bash", config.SCRIPT_PATH])
 
 
-def files_listener(directory, logger1, logger2, logger3):
+def files_listener(directory):
     global sender_logger, error_logger, watchdog_logger
-    sender_logger = logger1
-    watchdog_logger = logger2
-    error_logger = logger3
+    sender_logger, watchdog_logger, error_logger = create_loggers()
     scan_directory(directory)
     start_watchdog(directory)
