@@ -46,11 +46,19 @@ def list_files_in_order(curr_file, first_file):
     # send file a as the first file and file b as the second file
     file_identifier = part_a_or_b(curr_file)
     if file_identifier == "b":
-        files_to_send.append(("files", first_file, read_file(first_file)))
-        files_to_send.append(("files", curr_file, read_file(curr_file)))
+        files_to_send.append(
+            ("files", first_file, read_file("./files_output/" + first_file))
+        )
+        files_to_send.append(
+            ("files", curr_file, read_file("./files_output/" + curr_file))
+        )
     elif file_identifier == "a":
-        files_to_send.append(("files", curr_file, read_file(curr_file)))
-        files_to_send.append(("files", first_file, read_file(first_file)))
+        files_to_send.append(
+            ("files", curr_file, read_file("./files_output/" + curr_file))
+        )
+        files_to_send.append(
+            ("files", first_file, read_file("./files_output/" + first_file))
+        )
     return files_to_send
 
 
