@@ -12,7 +12,7 @@ global sender_logger, error_logger, watchdog_logger
 
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
-        global sender_logger, error_logger, watchdog_logger
+        global watchdog_logger
         if event.is_directory:
             return
         filename = event.src_path
@@ -28,6 +28,7 @@ class NewFileHandler(FileSystemEventHandler):
 
 
 def start_watchdog(directory):
+    global watchdog_logger
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
@@ -42,7 +43,7 @@ def start_watchdog(directory):
 
 
 def scan_directory(directory):
-    global sender_logger, error_logger, watchdog_logger
+    global watchdog_logger
     files = os.listdir(directory)
     print(watchdog_logger())
     watchdog_logger.info("Scanned files in directory:")
