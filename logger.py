@@ -16,7 +16,6 @@ def configure_logger(logger_name, log_file_name):
 
 
 def create_loggers():
-    global sender_logger, error_logger, watchdog_logger
     sender_logger = configure_logger(
         "info_logger",
         os.path.join(
