@@ -20,12 +20,17 @@ def classifyFiles(curr_filename, sender_logger, error_logger):
 
     elif key_exists:
         first_file_name = redis_client.get(full_file_name).decode("utf-8")
-        files_to_send = list_files_in_order(curr_filename, first_file_name)
-        send_http_request(
-            curr_filename, first_file_name, files_to_send, sender_logger, error_logger
-        )
-        os.remove(("{0}/{1}").format(config.DIRECTORY_TO_WATCH, first_file_name))
-        os.remove(("{0}/{1}").format(config.DIRECTORY_TO_WATCH, curr_filename))
+        if first_file_name != curr_filename:
+            files_to_send = list_files_in_order(curr_filename, first_file_name)
+            send_http_request(
+                curr_filename,
+                first_file_name,
+                files_to_send,
+                sender_logger,
+                error_logger,
+            )
+            os.remove(("{0}/{1}").format(config.DIRECTORY_TO_WATCH, first_file_name))
+            os.remove(("{0}/{1}").format(config.DIRECTORY_TO_WATCH, curr_filename))
 
 
 def part_a_or_b(filename):
