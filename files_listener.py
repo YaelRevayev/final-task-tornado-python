@@ -19,7 +19,7 @@ class NewFileHandler(FileSystemEventHandler):
         if event.is_directory:
             return
         filename = event.src_path
-        self.watchdog_logger.info(f"New file detected: {filename}")
+        self.watchdog_logger.info(f"New file detected: {os.path.basename(filename)}")
         threading.Thread(
             target=classifyFiles,
             args=(
