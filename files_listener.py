@@ -1,12 +1,11 @@
 import time
 import threading
-from logger import configure_logger
+from logger import LoggerSingleton
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
 import subprocess
-from datetime import datetime
 import config
 
 global info_logger
@@ -16,21 +15,19 @@ global sender_logger
 
 class NewFileHandler(FileSystemEventHandler):
     def on_created(self, event):
+        global watchdog_logger
         if event.is_directory:
             return
         filename = event.src_path
         watchdog_logger.info(f"New file detected: {filename}")
         threading.Thread(
             target=classifyFiles,
-            args=(
-                filename,
-                sender_logger,
-                error_logger,
-            ),
+            args=(filename,),
         ).start()
 
 
 def start_watchdog(directory):
+    global watchdog_logger
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
@@ -45,17 +42,14 @@ def start_watchdog(directory):
 
 
 def scan_directory(directory):
+    global watchdog_logger
     files = os.listdir(directory)
     watchdog_logger.info("Scanned files in directory:")
     for file in files:
         watchdog_logger.info(file)
         threading.Thread(
             target=classifyFiles,
-            args=(
-                file,
-                sender_logger,
-                error_logger,
-            ),
+            args=(file,),
         ).start()
 
 
@@ -65,22 +59,10 @@ def listen_for_file_expiration():
 
 def files_listener(directory):
     global watchdog_logger, error_logger, sender_logger
-    error_logger = configure_logger(
-        "error_logger",
-        os.path.join("logs", "error_watchdog.log"),
-    )
-    watchdog_logger = configure_logger(
-        "info_logger",
-        os.path.join(
-            "logs", f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log"
-        ),
-    )
-    sender_logger = configure_logger(
-        "info_logger",
-        os.path.join(
-            "logs", f"success_transfer{datetime.now().strftime('%Y-%m-%d')}.log"
-        ),
-    )
+    logger_instance = LoggerSingleton()
+    sender_logger = logger_instance.sender_logger
+    error_logger = logger_instance.error_logger
+    watchdog_logger = logger_instance.watchdog_logger
 
     scan_directory(directory)
     start_watchdog(directory)

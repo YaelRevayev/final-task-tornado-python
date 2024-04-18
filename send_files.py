@@ -10,7 +10,7 @@ redis_client = redis.StrictRedis(
 )
 
 
-def classifyFiles(curr_filename, first_logger, second_logger):
+def classifyFiles(curr_filename):
 
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
@@ -37,22 +37,14 @@ def part_a_or_b(filename):
 
 def list_files_in_order(curr_file, first_file):
     files_to_send = []
-    # send file a as the first file and file b as the second file
-    file_identifier = part_a_or_b(curr_file)
-    if file_identifier == "b":
-        files_to_send.append(
-            ("files", first_file, read_file("./files_output/" + first_file))
-        )
-        files_to_send.append(
-            ("files", curr_file, read_file("./files_output/" + curr_file))
-        )
-    elif file_identifier == "a":
-        files_to_send.append(
-            ("files", curr_file, read_file("./files_output/" + curr_file))
-        )
-        files_to_send.append(
-            ("files", first_file, read_file("./files_output/" + first_file))
-        )
+    file_paths = ["./files_output/" + first_file, "./files_output/" + curr_file]
+
+    for file in file_paths:
+        file_name = os.path.basename(file)
+        if part_a_or_b(file) == "a":
+            files_to_send.insert(0, ("files", file_name, read_file(file)))
+        else:
+            files_to_send.insert(1, ("files", file_name, read_file(file)))
     return files_to_send
 
 
@@ -60,6 +52,7 @@ def send_http_request(first_file_name, filename, files_to_send):
     logger_instance = LoggerSingleton()
     sender_logger = logger_instance.sender_logger
     error_logger = logger_instance.error_logger
+
     response = requests.post(
         "http://{ip}:{port}/merge_and_sign".format(
             ip=config.HAPROXY_SERVER_IP, port=config.HAPROXY_SERVER_PORT
@@ -78,5 +71,4 @@ def send_http_request(first_file_name, filename, files_to_send):
 
 def save_to_redis(key, value):
     redis_client.set(key, value, ex=config.EXPIRY_SECONDS)
-    # Set expiration time for the key 'mykey' to 60 seconds
     redis_client.expire(key, 60)
