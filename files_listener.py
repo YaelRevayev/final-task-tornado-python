@@ -33,7 +33,7 @@ def start_watchdog(directory):
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
     watchdog_logger.info(f"Watching directory: {directory}")
-
+    print("Watching")
     try:
         while True:
             time.sleep(1)
@@ -45,7 +45,7 @@ def start_watchdog(directory):
 def scan_directory(directory):
     global watchdog_logger
     files = os.listdir(directory)
-    print(watchdog_logger())
+    print(watchdog_logger)
     watchdog_logger.info("Scanned files in directory:")
     for file in files:
         watchdog_logger.info(file)
