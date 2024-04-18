@@ -5,7 +5,9 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
+import subprocess
 from datetime import datetime
+import config
 
 global info_logger
 global error_logger
@@ -55,6 +57,10 @@ def scan_directory(directory):
                 error_logger,
             ),
         ).start()
+
+
+def listen_for_file_expiration():
+    subprocess.run(["bash", config.SCRIPT_PATH])
 
 
 def files_listener(directory):

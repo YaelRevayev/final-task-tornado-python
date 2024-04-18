@@ -3,20 +3,14 @@ import requests
 import redis
 import config
 from file_operations import read_file, remove_extension
+from logger import LoggerSingleton
 
 redis_client = redis.StrictRedis(
     host=config.REDIS_HOST_IP, port=config.REDIS_HOST_PORT, db=0
 )
 
-global sender_logger
-global error_logger
-
 
 def classifyFiles(curr_filename, first_logger, second_logger):
-    global sender_logger
-    sender_logger = first_logger
-    global error_logger
-    error_logger = second_logger
 
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
@@ -63,6 +57,9 @@ def list_files_in_order(curr_file, first_file):
 
 
 def send_http_request(first_file_name, filename, files_to_send):
+    logger_instance = LoggerSingleton()
+    sender_logger = logger_instance.sender_logger
+    error_logger = logger_instance.error_logger
     response = requests.post(
         "http://{ip}:{port}/merge_and_sign".format(
             ip=config.HAPROXY_SERVER_IP, port=config.HAPROXY_SERVER_PORT
@@ -79,24 +76,7 @@ def send_http_request(first_file_name, filename, files_to_send):
         )
 
 
-def listen_for_redis_keys_expiration():
-    # Subscribe to key event notifications
-    pubsub = redis_client.pubsub()
-    pubsub.psubscribe("__keyevent@0__:expired")
-    for message in pubsub.listen():
-        handle_missing_second_file(message)
-
-
-def handle_missing_second_file(message):
-    key_name = message["data"].decode("utf-8")
-    if redis_client.exists(key_name):
-        expired_file_name = redis_client.get(key_name)
-        redis_client.delete(key_name)
-        os.remove(("{0}/{1}").format(config.DIRECTORY_TO_WATCH, expired_file_name))
-        sender_logger.info(
-            f"File '{expired_file_name}' deleted after Redis key expiration."
-        )
-
-
 def save_to_redis(key, value):
     redis_client.set(key, value, ex=config.EXPIRY_SECONDS)
+    # Set expiration time for the key 'mykey' to 60 seconds
+    redis_client.expire(key, 60)

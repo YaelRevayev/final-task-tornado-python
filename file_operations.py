@@ -12,8 +12,3 @@ def read_file(filename):
 def remove_extension(filename):
     base_filename, _ = os.path.splitext(filename)
     return base_filename
-
-
-def reset_folder(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
