@@ -3,7 +3,7 @@ import config
 
 
 def main():
-    listen_for_file_expiration()
+    # listen_for_file_expiration()
     files_listener(config.DIRECTORY_TO_WATCH)
 
 
