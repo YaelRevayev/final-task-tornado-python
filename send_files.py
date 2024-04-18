@@ -37,15 +37,15 @@ def part_a_or_b(filename):
 
 
 def list_files_in_order(curr_file, first_file):
-    files_to_send = []
+    files_to_send = [0, 0]
     file_paths = ["./files_output/" + first_file, "./files_output/" + curr_file]
 
     for file in file_paths:
         file_name = os.path.basename(file)
         if part_a_or_b(file) == "a":
-            files_to_send.insert(0, ("files", file_name, read_file(file)))
+            files_to_send[0]("files", file_name, read_file(file))
         else:
-            files_to_send.insert(1, ("files", file_name, read_file(file)))
+            files_to_send[1]("files", file_name, read_file(file))
     return files_to_send
 
 
