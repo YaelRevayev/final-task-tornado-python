@@ -3,7 +3,6 @@ import requests
 import redis
 import config
 from file_operations import read_file, remove_extension
-from logger import error_logger, sender_logger
 
 redis_client = redis.StrictRedis(
     host=config.REDIS_HOST_IP, port=config.REDIS_HOST_PORT, db=0
