@@ -10,7 +10,7 @@ redis_client = redis.StrictRedis(
 )
 
 
-def classifyFiles(curr_filename):
+def classifyFiles(curr_filename, sender_logger, error_logger):
 
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
@@ -22,7 +22,9 @@ def classifyFiles(curr_filename):
     elif key_exists:
         first_file_name = redis_client.get(full_file_name).decode("utf-8")
         files_to_send = list_files_in_order(curr_filename, first_file_name)
-        send_http_request(curr_filename, first_file_name, files_to_send)
+        send_http_request(
+            curr_filename, first_file_name, files_to_send, sender_logger, error_logger
+        )
         os.remove(("{0}/{1}").format(config.DIRECTORY_TO_WATCH, first_file_name))
         os.remove(("{0}/{1}").format(config.DIRECTORY_TO_WATCH, curr_filename))
 
@@ -48,8 +50,9 @@ def list_files_in_order(curr_file, first_file):
     return files_to_send
 
 
-def send_http_request(first_file_name, filename, files_to_send):
-
+def send_http_request(
+    first_file_name, filename, files_to_send, sender_logger, error_logger
+):
     response = requests.post(
         "http://{ip}:{port}/merge_and_sign".format(
             ip=config.HAPROXY_SERVER_IP, port=config.HAPROXY_SERVER_PORT
@@ -57,11 +60,11 @@ def send_http_request(first_file_name, filename, files_to_send):
         files=files_to_send,
     )
     if response.status_code == 200:
-        sender_logger().info(
+        sender_logger.info(
             f"Files '{first_file_name}' , '{filename}' sent successfully."
         )
     else:
-        error_logger().error(
+        error_logger.error(
             f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}"
         )
 

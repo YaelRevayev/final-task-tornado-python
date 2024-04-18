@@ -3,23 +3,6 @@ import os
 from datetime import datetime
 import config
 
-global sender_logger, error_logger, watchdog_logger
-
-
-def sender_logger():
-    global sender_logger
-    return sender_logger
-
-
-def error_logger():
-    global error_logger
-    return error_logger
-
-
-def watchdog_logger():
-    global watchdog_logger
-    return watchdog_logger
-
 
 def configure_logger(logger_name, log_file_name):
     logger = logging.getLogger(logger_name)
@@ -57,3 +40,4 @@ def create_loggers():
         ),
     )
     watchdog_logger.setLevel(logging.INFO)
+    return (sender_logger, watchdog_logger, error_logger)

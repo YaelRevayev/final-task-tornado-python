@@ -4,9 +4,11 @@ from logger import create_loggers
 
 
 def main():
-    create_loggers()
+    sender_logger, watchdog_logger, error_logger = create_loggers()
     listen_for_file_expiration()
-    files_listener(config.DIRECTORY_TO_WATCH)
+    files_listener(
+        config.DIRECTORY_TO_WATCH, sender_logger, watchdog_logger, error_logger
+    )
 
 
 if __name__ == "__main__":
