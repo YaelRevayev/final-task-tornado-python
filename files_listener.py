@@ -30,7 +30,9 @@ class NewFileHandler(FileSystemEventHandler):
         ).start()
 
 
-def start_watchdog(directory, sender_logger, error_logger, watchdog_logger):
+def start_watchdog(
+    directory, sender_logger, error_logger, watchdog_logger, run_indefinitely=True
+):
     observer = Observer()
     observer.schedule(
         NewFileHandler(sender_logger, error_logger, watchdog_logger),
@@ -39,11 +41,15 @@ def start_watchdog(directory, sender_logger, error_logger, watchdog_logger):
     )
     observer.start()
     watchdog_logger.info(f"Watching directory: {directory}")
-    print("Watching")
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
+    if run_indefinitely:
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+            observer.join()
+    else:
+        time.sleep(0.1)  # Short delay to allow the observer to start
         observer.stop()
         observer.join()
 
@@ -68,8 +74,6 @@ def listen_for_file_expiration():
 
 
 def files_listener(directory):
-    # Initialize logger instances
     sender_logger, watchdog_logger, error_logger = create_loggers()
-    # Start monitoring the directory
     scan_directory(directory, sender_logger, error_logger, watchdog_logger)
     start_watchdog(directory, sender_logger, error_logger, watchdog_logger)
