@@ -1,5 +1,10 @@
 import unittest
 from unittest.mock import MagicMock, patch
+import os
+import sys
+
+project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(project_dir)
 from files_listener import NewFileHandler, start_watchdog
 from send_files import classifyFiles
 
@@ -16,12 +21,14 @@ class TestNewFileHandler(unittest.TestCase):
             mock_sender_logger, mock_error_logger, mock_watchdog_logger
         )
         mock_event = MagicMock()
-        mock_event.src_path = "file.txt"
+        mock_event.src_path = "image01_a.jpg"
         mock_event.is_directory = False
 
         handler.on_created(mock_event)
 
-        mock_watchdog_logger.info.assert_called_once_with("New file detected: file.txt")
+        mock_watchdog_logger.info.assert_called_once_with(
+            "New file detected: image01_a.jpg"
+        )
         mock_thread.assert_called_once_with(
             target=classifyFiles,
             args=(
@@ -38,7 +45,7 @@ class TestNewFileHandler(unittest.TestCase):
         mock_error_logger = MagicMock()
         mock_watchdog_logger = MagicMock()
 
-        directory = "."
+        directory = "files_output"
         start_watchdog(
             directory,
             mock_sender_logger,

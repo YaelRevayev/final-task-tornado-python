@@ -1,10 +1,11 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from send_files import (
-    classifyFiles,
-    part_a_or_b,
-    list_files_in_order,
-)
+import os
+import sys
+
+project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(project_dir)
+from send_files import classifyFiles, part_a_or_b, list_files_in_order
 
 
 class TestMainScript(unittest.TestCase):
@@ -18,10 +19,10 @@ class TestMainScript(unittest.TestCase):
 
         sender_logger = MagicMock()
         error_logger = MagicMock()
-        curr_filename = "/path/to/somefile.txt"
+        curr_filename = "files_output/image100_a.jpg"
 
         classifyFiles(curr_filename, sender_logger, error_logger)
-        mock_save_to_redis.assert_called_once_with("somefile", "somefile.txt")
+        mock_save_to_redis.assert_called_once_with("image100", "image100_a.jpg")
 
     @patch("send_files.redis_client.exists")
     @patch("send_files.redis_client.get")
@@ -37,16 +38,14 @@ class TestMainScript(unittest.TestCase):
         mock_redis_exists,
     ):
         mock_redis_exists.return_value = True
-        mock_redis_get.return_value.decode.return_value = "somefile.txt"
+        mock_redis_get.return_value.decode.return_value = "image100_a.jpg"
 
         sender_logger = MagicMock()
         error_logger = MagicMock()
-        curr_filename = "/path/to/anotherfile.txt"
+        curr_filename = "files_output/image100_b"
 
         classifyFiles(curr_filename, sender_logger, error_logger)
-        mock_list_files_in_order.assert_called_once_with(
-            "anotherfile.txt", "somefile.txt"
-        )
+        mock_list_files_in_order.assert_called_once_with("image100_b", "image100_a.jpg")
         mock_send_http_request.assert_called_once()
 
     def test_part_a_or_b_a(self):
@@ -62,7 +61,7 @@ class TestMainScript(unittest.TestCase):
         self.assertIsNone(part_a_or_b(filename))
 
     def test_list_files_in_order(self):
-        with patch("main_script.read_file") as mock_read_file:
+        with patch("send_files.read_file") as mock_read_file:
             mock_read_file.return_value = b"file content"
             result = list_files_in_order("file_b.txt", "file_a.txt")
             expected_result = [
@@ -73,4 +72,5 @@ class TestMainScript(unittest.TestCase):
 
 
 if __name__ == "__main__":
+
     unittest.main()
