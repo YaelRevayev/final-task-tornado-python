@@ -58,8 +58,6 @@ def list_files_in_order(curr_file, first_file):
         part = part_a_or_b(file_name)
         if part == "b":
             files_to_send.append(("files", (file_name, file_content)))
-    print("the files content:")
-    print(files_to_send)
     return files_to_send
 
 

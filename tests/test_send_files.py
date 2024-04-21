@@ -5,7 +5,12 @@ import sys
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(project_dir)
-from send_files import classifyFiles, part_a_or_b, list_files_in_order
+from send_files import (
+    classifyFiles,
+    part_a_or_b,
+    list_files_in_order,
+    send_http_request,
+)
 
 
 class TestMainScript(unittest.TestCase):
@@ -69,6 +74,43 @@ class TestMainScript(unittest.TestCase):
                 ("files", ("file_b.txt", b"file content")),
             ]
             self.assertEqual(result, expected_result)
+
+    @patch("send_files.requests.post")
+    def test_send_http_request_success(self, mock_post):
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_post.return_value = mock_response
+
+        mock_sender_logger = MagicMock()
+        mock_error_logger = MagicMock()
+
+        send_http_request(
+            "filename",
+            "first_file_name",
+            [("files", ("filename", b"file_content"))],
+            mock_sender_logger,
+            mock_error_logger,
+        )
+
+        mock_sender_logger.info.assert_called_once_with(
+            "Files 'first_file_name' , 'filename' sent successfully."
+        )
+
+    @patch("send_files.requests.post")
+    def test_send_http_request_failure(self, mock_post):
+        mock_response = MagicMock(status_code=404, reason="Not Found")
+        mock_post.return_value = mock_response
+
+        mock_sender_logger = MagicMock()
+        mock_error_logger = MagicMock()
+
+        send_http_request(
+            "filename", "first_file_name", [], mock_sender_logger, mock_error_logger
+        )
+
+        mock_error_logger.error.assert_called_once_with(
+            "Error sending files 'first_file_name' , 'filename': 404 Not Found"
+        )
 
 
 if __name__ == "__main__":
