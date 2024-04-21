@@ -1,23 +1,13 @@
 import time
 import threading
-<<<<<<< HEAD
-=======
-from logger import configure_error_logger,configure_success_logger
->>>>>>> ef0307fac2214789132c071fd4a2f206f3cb0bbd
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
-<<<<<<< HEAD
 import subprocess
 from logger import create_loggers
 import config
 
-=======
-
-global info_logger
-global error_logger
->>>>>>> ef0307fac2214789132c071fd4a2f206f3cb0bbd
 
 class NewFileHandler(FileSystemEventHandler):
     def __init__(self, sender_logger, error_logger, watchdog_logger):
@@ -29,7 +19,6 @@ class NewFileHandler(FileSystemEventHandler):
         if event.is_directory:
             return
         filename = event.src_path
-<<<<<<< HEAD
         self.watchdog_logger.info(f"New file detected: {os.path.basename(filename)}")
         threading.Thread(
             target=classifyFiles,
@@ -39,10 +28,6 @@ class NewFileHandler(FileSystemEventHandler):
                 self.error_logger,
             ),
         ).start()
-=======
-        info_logger.info(f"New file detected: {filename}")
-        threading.Thread(target=classifyFiles,args=(filename,info_logger,error_logger,)).start()
->>>>>>> ef0307fac2214789132c071fd4a2f206f3cb0bbd
 
 
 def start_watchdog(
@@ -67,6 +52,7 @@ def start_watchdog(
         time.sleep(0.1)  # Short delay to allow the observer to start
         observer.stop()
         observer.join()
+
 
 def scan_directory(directory, sender_logger, error_logger, watchdog_logger):
     files = os.listdir(directory)
