@@ -44,7 +44,6 @@ def part_a_or_b(filename):
 def list_files_in_order(curr_file, first_file):
     files_to_send = []
     file_paths = [f"files_output/{first_file}", f"files_output/{curr_file}"]
-    print(file_paths)
 
     for file_path in file_paths:
         file_name = os.path.basename(file_path)
@@ -59,12 +58,12 @@ def list_files_in_order(curr_file, first_file):
         part = part_a_or_b(file_name)
         if part == "b":
             files_to_send.append(("files", (file_name, file_content)))
-
+    print(files_to_send)
     return files_to_send
 
 
 def send_http_request(
-    first_file_name, filename, files_to_send, sender_logger, error_logger
+    filename, first_file_name, files_to_send, sender_logger, error_logger
 ):
     response = requests.post(
         "http://{ip}:{port}/merge_and_sign".format(
