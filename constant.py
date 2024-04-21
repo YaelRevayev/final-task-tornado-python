@@ -1,8 +1,0 @@
-<<<<<<< HEAD
-HAPROXY_SERVER_IP = "40.76.184.13" #fastapi-vm1
-=======
-HAPROXY_SERVER_IP = "40.76.184.13"
->>>>>>> dev
-HAPROXY_SERVER_PORT = 8000
-REDIS_HOST_IP = 'localhost'
-REDIS_HOST_PORT = 6379
