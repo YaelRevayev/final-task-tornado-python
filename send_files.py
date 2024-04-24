@@ -64,20 +64,23 @@ def list_files_in_order(curr_file, first_file):
 def send_http_request(
     filename, first_file_name, files_to_send, sender_logger, error_logger
 ):
-    response = requests.post(
-        "http://{ip}:{port}/merge_and_sign".format(
-            ip=config.HAPROXY_SERVER_IP, port=config.HAPROXY_SERVER_PORT
-        ),
-        files=files_to_send,
-    )
-    if response.status_code == 200:
-        sender_logger.info(
-            f"Files '{first_file_name}' , '{filename}' sent successfully."
+    try:
+        response = requests.post(
+            "http://{ip}:{port}/merge_and_sign".format(
+                ip=config.HAPROXY_SERVER_IP, port=config.HAPROXY_SERVER_PORT
+            ),
+            files=files_to_send,
         )
-    else:
-        error_logger.error(
-            f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}"
-        )
+        if response.status_code == 200:
+            sender_logger.info(
+                f"Files '{first_file_name}' , '{filename}' sent successfully."
+            )
+        else:
+            error_logger.error(
+                f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}"
+            )
+    except Exception as e:
+        error_logger.error(f"Exception occurred: {e}")
 
 
 def save_to_redis(key, value):
