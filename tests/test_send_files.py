@@ -58,7 +58,7 @@ class TestMainScript(unittest.TestCase):
         self.assertEqual(part_a_or_b(filename), "a")
 
     def test_part_a_or_b_b(self):
-        filename = "filename_b.txt"
+        filename = "filename_b"
         self.assertEqual(part_a_or_b(filename), "b")
 
     def test_part_a_or_b_none(self):
