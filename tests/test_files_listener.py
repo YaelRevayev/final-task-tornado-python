@@ -5,8 +5,8 @@ import sys
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(project_dir)
-from files_listener import NewFileHandler, start_watchdog
-from send_files import classifyFiles
+from src.files_listener import NewFileHandler, start_watchdog
+from src.send_files import classifyFiles
 
 
 class TestNewFileHandler(unittest.TestCase):

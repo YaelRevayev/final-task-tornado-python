@@ -1,8 +1,8 @@
 import os
 import requests
 import redis
-import config
-from file_operations import read_file, remove_extension
+import config.config as config
+from src.file_operations import read_file, remove_extension
 
 redis_client = redis.StrictRedis(
     host=config.REDIS_HOST_IP, port=config.REDIS_HOST_PORT, db=0
@@ -13,12 +13,11 @@ def classifyFiles(curr_filename, sender_logger, error_logger):
 
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
-    key_exists = redis_client.exists(full_file_name)
 
-    if not key_exists:
+    if not redis_client.exists(full_file_name):
         save_to_redis(full_file_name, curr_filename)
 
-    elif key_exists:
+    else:
         first_file_name = redis_client.get(full_file_name).decode("utf-8")
         if first_file_name != curr_filename:
             files_to_send = list_files_in_order(curr_filename, first_file_name)
