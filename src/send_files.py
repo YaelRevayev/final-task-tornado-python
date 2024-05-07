@@ -1,6 +1,5 @@
 import os
 import requests
-import redis
 import sys
 from file_operations import read_file, remove_extension
 from redis_operations import *
@@ -68,9 +67,7 @@ def list_files_in_order(curr_file, first_file):
     return files_to_send
 
 
-def send_http_request(
-    filename, first_file_name, files_to_send, sender_logger, error_logger
-):
+def send_http_request(filename, first_file_name, files_to_send):
     global sender_logger, error_logger
     try:
         response = requests.post(

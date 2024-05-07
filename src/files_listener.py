@@ -17,6 +17,7 @@ import configs.config
 global sender_logger
 global watchdog_logger
 global error_logger
+sender_logger, watchdog_logger, error_logger = create_loggers()
 
 
 class NewFileHandler(FileSystemEventHandler):
@@ -59,7 +60,7 @@ def start_watchdog(directory, run_indefinitely=True):
 
 
 def scan_directory(directory):
-    global watchdog_logger
+    global watchdog_logger, sender_logger, error_logger
     files = os.listdir(directory)
     for file in files:
         watchdog_logger.info(f"Detected file: {file}")
