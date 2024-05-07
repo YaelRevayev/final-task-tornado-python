@@ -5,7 +5,7 @@ import sys
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(project_dir)
-from send_files import (
+from src.send_files import (
     classifyFiles,
     part_a_or_b,
     list_files_in_order,

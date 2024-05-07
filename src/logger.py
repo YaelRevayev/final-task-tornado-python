@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime
-import config
+import configs.config as config
 
 
 def configure_logger(logger_name, log_file_name):
@@ -17,7 +17,7 @@ def configure_logger(logger_name, log_file_name):
 
 def create_loggers():
     sender_logger = configure_logger(
-        "info_logger",
+        "sender_logger",
         os.path.join(
             config.LOGS_FOLDER_NAME,
             f"success_transfer{datetime.now().strftime('%Y-%m-%d')}.log",
@@ -32,7 +32,7 @@ def create_loggers():
     error_logger.setLevel(logging.ERROR)
 
     watchdog_logger = configure_logger(
-        "info_logger",
+        "watchdog_logger",
         os.path.join(
             config.LOGS_FOLDER_NAME,
             f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log",
