@@ -29,7 +29,7 @@ def classifyFiles(curr_filename, sender_logger_instance, error_logger_instance):
     else:
         first_file_name = get_value_by_key(full_file_name)
         if first_file_name != curr_filename:
-            files_to_send = list_files_in_order(curr_filename, first_file_name)
+            files_to_send = list_files(curr_filename, first_file_name)
             send_http_request(curr_filename, first_file_name, files_to_send)
             remove_file_from_os(config.DIRECTORY_TO_WATCH, first_file_name)
             remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
@@ -47,23 +47,12 @@ def remove_file_from_os(folder_name, file_name):
     os.remove(("{0}/{1}").format(folder_name, file_name))
 
 
-def list_files_in_order(curr_file, first_file):
+def list_files(curr_file, first_file):
     files_to_send = []
-    file_paths = [f"files_output/{first_file}", f"files_output/{curr_file}"]
-
-    for file_path in file_paths:
-        file_name = os.path.basename(file_path)
-        file_content = read_file(file_path)
-        part = part_a_or_b(file_name)
-        if part == "a":
-            files_to_send.append(("files", (file_name, file_content)))
-
-    for file_path in file_paths:
-        file_name = os.path.basename(file_path)
-        file_content = read_file(file_path)
-        part = part_a_or_b(file_name)
-        if part == "b":
-            files_to_send.append(("files", (file_name, file_content)))
+    files_to_send.append(("files", (curr_file, read_file(f"files_output/{curr_file}"))))
+    files_to_send.append(
+        ("files", (first_file, read_file(f"files_output/{first_file}")))
+    )
     return files_to_send
 
 

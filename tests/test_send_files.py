@@ -5,6 +5,8 @@ import sys
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(project_dir)
+sys.path.append(project_dir)
+sys.path.insert(0, "./src")
 from src.send_files import (
     classifyFiles,
     part_a_or_b,
@@ -14,6 +16,9 @@ from src.send_files import (
 
 
 class TestMainScript(unittest.TestCase):
+    def setUp(self):
+        self.sender_logger = MagicMock()
+        self.error_logger = MagicMock()
 
     @patch("send_files.redis_client.exists")
     @patch("send_files.save_to_redis")
@@ -85,11 +90,7 @@ class TestMainScript(unittest.TestCase):
         mock_error_logger = MagicMock()
 
         send_http_request(
-            "filename",
-            "first_file_name",
-            [("files", ("filename", b"file_content"))],
-            mock_sender_logger,
-            mock_error_logger,
+            "filename", "first_file_name", [("files", ("filename", b"file_content"))]
         )
 
         mock_sender_logger.info.assert_called_once_with(
@@ -104,9 +105,7 @@ class TestMainScript(unittest.TestCase):
         mock_sender_logger = MagicMock()
         mock_error_logger = MagicMock()
 
-        send_http_request(
-            "filename", "first_file_name", [], mock_sender_logger, mock_error_logger
-        )
+        send_http_request("filename", "first_file_name", [])
 
         mock_error_logger.error.assert_called_once_with(
             "Error sending files 'first_file_name' , 'filename': 404 Not Found"

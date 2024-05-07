@@ -23,9 +23,9 @@ class TestFileListener(unittest.TestCase):
         self.watchdog_logger.info = MagicMock()
         self.error_logger = MagicMock()
 
-    @patch("src.files_listener.sender_logger")  # Mock sender_lo
-    @patch("src.files_listener.error_logger")  # Mock sender_lo
-    @patch("src.files_listener.watchdog_logger")  # Mock sender_lo
+    @patch("src.files_listener.sender_logger")
+    @patch("src.files_listener.error_logger")  #
+    @patch("src.files_listener.watchdog_logger")
     @patch("src.files_listener.multiprocessing.Process")
     def test_on_created(
         self, mock_process, mock_watchdog_logger, mock_error_logger, mock_sender_logger

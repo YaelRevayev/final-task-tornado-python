@@ -81,7 +81,7 @@ def listen_for_file_expiration():
 
 
 def files_listener(directory):
-    global sender_logger, error_logger, watchdog_logger
-    sender_logger, watchdog_logger, error_logger = create_loggers()
+    # global sender_logger, error_logger, watchdog_logger
+    # sender_logger, watchdog_logger, error_logger = create_loggers()
     scan_directory(directory)
     start_watchdog(directory)
