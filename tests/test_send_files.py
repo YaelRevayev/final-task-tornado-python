@@ -11,6 +11,7 @@ from src.send_files import (
     classifyFiles,
     send_http_request,
 )
+import src.file_operations as file_operations
 
 
 class TestMainScript(unittest.TestCase):
