@@ -11,3 +11,7 @@ def read_file(filename):
 def remove_extension(filename):
     base_filename, _ = os.path.splitext(filename)
     return base_filename
+
+
+def remove_file_from_os(folder_name, file_name):
+    os.remove(("{0}/{1}").format(folder_name, file_name))

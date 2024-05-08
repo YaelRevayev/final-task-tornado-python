@@ -6,7 +6,7 @@ import sys
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(project_dir)
 sys.path.insert(0, "./src")
-from src.file_operations import read_file, remove_extension
+from src.file_operations import read_file, remove_extension, remove_file_from_os
 
 
 class TestFileFunctions(unittest.TestCase):
@@ -26,6 +26,15 @@ class TestFileFunctions(unittest.TestCase):
         base_filename = remove_extension(filename)
 
         self.assertEqual(base_filename, "test_file")
+
+    @patch("os.remove")
+    def test_remove_file_from_os(self, mock_os_remove):
+        folder_name = "test_folder"
+        file_name = "test_file.txt"
+
+        remove_file_from_os(folder_name, file_name)
+
+        mock_os_remove.assert_called_once_with("test_folder/test_file.txt")
 
 
 if __name__ == "__main__":
