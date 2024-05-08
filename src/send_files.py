@@ -6,8 +6,6 @@ from redis_operations import *
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 config_dir = os.path.join(project_dir, "config")
-
-
 sys.path.append(project_dir)
 sys.path.insert(0, config_dir)
 import configs.config as config
@@ -33,14 +31,6 @@ def classifyFiles(curr_filename, sender_logger_instance, error_logger_instance):
             send_http_request(curr_filename, first_file_name, files_to_send)
             remove_file_from_os(config.DIRECTORY_TO_WATCH, first_file_name)
             remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
-
-
-def part_a_or_b(filename):
-    index_of_underscore = filename.find("_")
-    if index_of_underscore != -1 and index_of_underscore + 1 < len(filename):
-        return filename[index_of_underscore + 1]
-    else:
-        return None
 
 
 def remove_file_from_os(folder_name, file_name):

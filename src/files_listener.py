@@ -6,18 +6,43 @@ from send_files import classifyFiles
 import os
 import sys
 import subprocess
-from logger import create_loggers
+import logging
+from datetime import datetime
+from logger import configure_logger
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 src_dir = os.path.join(project_dir, "config")
 sys.path.append(project_dir)
 sys.path.insert(0, src_dir)
-import configs.config
+import configs.config as config
 
 global sender_logger
 global watchdog_logger
 global error_logger
-sender_logger, watchdog_logger, error_logger = create_loggers()
+
+sender_logger = configure_logger(
+    "sender_logger",
+    os.path.join(
+        config.LOGS_FOLDER_NAME,
+        f"success_transfer{datetime.now().strftime('%Y-%m-%d')}.log",
+    ),
+    logging.INFO,
+)
+
+error_logger = configure_logger(
+    "error_logger",
+    os.path.join(config.LOGS_FOLDER_NAME, "error_watchdog.log"),
+    logging.ERROR,
+)
+
+watchdog_logger = configure_logger(
+    "watchdog_logger",
+    os.path.join(
+        config.LOGS_FOLDER_NAME,
+        f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log",
+    ),
+    logging.INFO,
+)
 
 
 class NewFileHandler(FileSystemEventHandler):
@@ -75,13 +100,9 @@ def scan_directory(directory):
 
 
 def listen_for_file_expiration():
-    subprocess.run(
-        ["bash", configs.config.SCRIPT_PATH, configs.config.DIRECTORY_TO_WATCH]
-    )
+    subprocess.run(["bash", config.SCRIPT_PATH, config.DIRECTORY_TO_WATCH])
 
 
 def files_listener(directory):
-    # global sender_logger, error_logger, watchdog_logger
-    # sender_logger, watchdog_logger, error_logger = create_loggers()
     scan_directory(directory)
     start_watchdog(directory)

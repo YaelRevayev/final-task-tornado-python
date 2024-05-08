@@ -10,8 +10,6 @@ from src.files_listener import (
     NewFileHandler,
     start_watchdog,
     scan_directory,
-    sender_logger,
-    error_logger,
 )
 from src.send_files import *
 
@@ -54,8 +52,7 @@ class TestFileListener(unittest.TestCase):
 
     @patch("src.files_listener.os.listdir")
     @patch("src.files_listener.multiprocessing.Process")
-    @patch("src.files_listener.create_loggers")
-    def test_scan_directory(self, mock_create_loggers, mock_process, mock_listdir):
+    def test_scan_directory(self, mock_process, mock_listdir):
 
         directory = "/path/to/directory"
         mock_listdir.return_value = ["file1.txt", "file2.txt"]

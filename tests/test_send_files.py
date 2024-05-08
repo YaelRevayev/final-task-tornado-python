@@ -9,8 +9,6 @@ sys.path.append(project_dir)
 sys.path.insert(0, "./src")
 from src.send_files import (
     classifyFiles,
-    part_a_or_b,
-    list_files_in_order,
     send_http_request,
 )
 
@@ -20,96 +18,92 @@ class TestMainScript(unittest.TestCase):
         self.sender_logger = MagicMock()
         self.error_logger = MagicMock()
 
-    @patch("send_files.redis_client.exists")
     @patch("send_files.save_to_redis")
-    def test_classifyFiles_key_does_not_exist(
-        self, mock_save_to_redis, mock_redis_exists
+    @patch("send_files.does_key_exists", return_value=False)
+    @patch("send_files.remove_extension", return_value="file_name")
+    def test_key_not_exists(
+        self, mock_remove_extension, mock_does_key_exists, mock_save_to_redis
     ):
-        mock_redis_exists.return_value = False
+        sender_logger_instance = MagicMock()
+        error_logger_instance = MagicMock()
+        classifyFiles("curr_filename", sender_logger_instance, error_logger_instance)
 
-        sender_logger = MagicMock()
-        error_logger = MagicMock()
-        curr_filename = "files_output/image100_a.jpg"
+        mock_does_key_exists.assert_called_once_with("file_name")
+        mock_remove_extension.assert_called_once_with("curr_filename")
+        mock_save_to_redis.assert_called_once_with("file_name", "curr_filename")
 
-        classifyFiles(curr_filename, sender_logger, error_logger)
-        mock_save_to_redis.assert_called_once_with("image100", "image100_a.jpg")
-
-    @patch("send_files.redis_client.exists")
-    @patch("send_files.redis_client.get")
-    @patch("send_files.list_files_in_order")
+    @patch(
+        "send_files.list_files",
+        return_value=[("files", ("filename", b"file_content"))],
+    )
+    @patch("send_files.remove_file_from_os")
     @patch("send_files.send_http_request")
-    @patch("os.remove")
-    def test_classifyFiles_key_exists(
+    @patch("send_files.get_value_by_key", return_value="first_file_name")
+    @patch("send_files.does_key_exists", return_value=True)
+    @patch("send_files.remove_extension", return_value="file_name")
+    def test_key_exists(
         self,
-        mock_os_remove,
+        mock_remove_extension,
+        mock_does_key_exists,
+        mock_get_value_by_key,
         mock_send_http_request,
-        mock_list_files_in_order,
-        mock_redis_get,
-        mock_redis_exists,
+        mock_remove_file_from_os,
+        mock_list_files,
     ):
-        mock_redis_exists.return_value = True
-        mock_redis_get.return_value.decode.return_value = "image100_a.jpg"
+        sender_logger_instance = MagicMock()
+        error_logger_instance = MagicMock()
+        classifyFiles("curr_filename", sender_logger_instance, error_logger_instance)
 
-        sender_logger = MagicMock()
-        error_logger = MagicMock()
-        curr_filename = "files_output/image100_b"
-
-        classifyFiles(curr_filename, sender_logger, error_logger)
-        mock_list_files_in_order.assert_called_once_with("image100_b", "image100_a.jpg")
-        mock_send_http_request.assert_called_once()
-
-    def test_part_a_or_b_a(self):
-        filename = "filename_a.txt"
-        self.assertEqual(part_a_or_b(filename), "a")
-
-    def test_part_a_or_b_b(self):
-        filename = "filename_b.txt"
-        self.assertEqual(part_a_or_b(filename), "b")
-
-    def test_part_a_or_b_none(self):
-        filename = "filename.txt"
-        self.assertIsNone(part_a_or_b(filename))
-
-    def test_list_files_in_order(self):
-        with patch("send_files.read_file") as mock_read_file:
-            mock_read_file.return_value = b"file content"
-            result = list_files_in_order("file_b.txt", "file_a.txt")
-            expected_result = [
-                ("files", ("file_a.txt", b"file content")),
-                ("files", ("file_b.txt", b"file content")),
-            ]
-            self.assertEqual(result, expected_result)
-
-    @patch("send_files.requests.post")
-    def test_send_http_request_success(self, mock_post):
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_post.return_value = mock_response
-
-        mock_sender_logger = MagicMock()
-        mock_error_logger = MagicMock()
-
-        send_http_request(
-            "filename", "first_file_name", [("files", ("filename", b"file_content"))]
+        mock_does_key_exists.assert_called_once_with("file_name")
+        mock_remove_extension.assert_called_once_with("curr_filename")
+        mock_get_value_by_key.assert_called_once_with("file_name")
+        mock_list_files.assert_called_once_with("curr_filename", "first_file_name")
+        mock_send_http_request.assert_called_once_with(
+            "curr_filename",
+            "first_file_name",
+            [("files", ("filename", b"file_content"))],
+        )
+        mock_remove_file_from_os.assert_called_once_with(
+            "directory_to_watch", "first_file_name"
+        )
+        mock_remove_file_from_os.assert_called_once_with(
+            "directory_to_watch", "curr_filename"
         )
 
-        mock_sender_logger.info.assert_called_once_with(
-            "Files 'first_file_name' , 'filename' sent successfully."
-        )
 
-    @patch("send_files.requests.post")
-    def test_send_http_request_failure(self, mock_post):
-        mock_response = MagicMock(status_code=404, reason="Not Found")
-        mock_post.return_value = mock_response
+@patch("send_files.requests.post")
+def test_send_http_request_success(self, mock_post):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_post.return_value = mock_response
 
-        mock_sender_logger = MagicMock()
-        mock_error_logger = MagicMock()
+    mock_sender_logger = MagicMock()
+    mock_error_logger = MagicMock()
 
-        send_http_request("filename", "first_file_name", [])
+    send_http_request(
+        "filename", "first_file_name", [("files", ("filename", b"file_content"))]
+    )
 
-        mock_error_logger.error.assert_called_once_with(
-            "Error sending files 'first_file_name' , 'filename': 404 Not Found"
-        )
+    mock_sender_logger.info.assert_called_once_with(
+        "Files 'first_file_name' , 'filename' sent successfully."
+    )
+    mock_error_logger.error.assert_not_called()
+
+
+@patch("send_files.requests.post")
+def test_send_http_request_failure(self, mock_post):
+    mock_response = MagicMock(status_code=404, reason="Not Found")
+    mock_post.return_value = mock_response
+
+    mock_sender_logger = MagicMock()
+    mock_error_logger = MagicMock()
+
+    send_http_request("filename", "first_file_name", [])
+
+    mock_error_logger.error.assert_called_once_with(
+        "Error sending files 'first_file_name' , 'filename': 404 Not Found"
+    )
+    mock_sender_logger.info.assert_not_called()
 
 
 if __name__ == "__main__":

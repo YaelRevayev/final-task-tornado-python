@@ -16,7 +16,6 @@ redis_client = redis.StrictRedis(
 
 def save_to_redis(key, value):
     redis_client.set(key, value, ex=config.EXPIRY_SECONDS)
-    redis_client.expire(key, config.EXPIRY_SECONDS)
 
 
 def does_key_exists(full_file_name):
