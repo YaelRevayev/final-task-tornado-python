@@ -21,10 +21,7 @@ class TestMainScript(unittest.TestCase):
 
     @patch("redis_operations.save_to_redis")
     @patch("redis_operations.does_key_exists", return_value=False)
-    @patch("file_operations.remove_extension", return_value="file_name")
-    def test_key_not_exists(
-        self, mock_remove_extension, mock_does_key_exists, mock_save_to_redis
-    ):
+    def test_key_not_exists(self, mock_does_key_exists, mock_save_to_redis):
         sender_logger_instance = MagicMock()
         error_logger_instance = MagicMock()
         with patch("redis_operations.redis"):
@@ -33,7 +30,6 @@ class TestMainScript(unittest.TestCase):
             )
 
         mock_does_key_exists.assert_called_once_with("file_name")
-        mock_remove_extension.assert_called_once_with("curr_filename")
         mock_save_to_redis.assert_called_once_with("file_name", "curr_filename")
 
     @patch(
@@ -44,10 +40,8 @@ class TestMainScript(unittest.TestCase):
     @patch("send_files.send_http_request")
     @patch("redis_operations.get_value_by_key", return_value="first_file_name")
     @patch("redis_operations.does_key_exists", return_value=True)
-    @patch("file_operations.remove_extension", return_value="file_name")
     def test_key_exists(
         self,
-        mock_remove_extension,
         mock_does_key_exists,
         mock_get_value_by_key,
         mock_send_http_request,
@@ -62,7 +56,6 @@ class TestMainScript(unittest.TestCase):
             )
 
         mock_does_key_exists.assert_called_once_with("file_name")
-        mock_remove_extension.assert_called_once_with("curr_filename")
         mock_get_value_by_key.assert_called_once_with("file_name")
         mock_list_files.assert_called_once_with("curr_filename", "first_file_name")
         mock_send_http_request.assert_called_once_with(
