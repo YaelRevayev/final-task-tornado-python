@@ -1,7 +1,7 @@
 import os
 import requests
 import sys
-from file_operations import read_file, remove_extension, remove_file_from_os
+from file_operations import read_file, remove_extension, remove_file_from_os, list_files
 from redis_operations import *
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -31,15 +31,6 @@ def classifyFiles(curr_filename, sender_logger_instance, error_logger_instance):
             send_http_request(curr_filename, first_file_name, files_to_send)
             remove_file_from_os(config.DIRECTORY_TO_WATCH, first_file_name)
             remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
-
-
-def list_files(curr_file, first_file):
-    files_to_send = []
-    files_to_send.append(("files", (curr_file, read_file(f"files_output/{curr_file}"))))
-    files_to_send.append(
-        ("files", (first_file, read_file(f"files_output/{first_file}")))
-    )
-    return files_to_send
 
 
 def send_http_request(filename, first_file_name, files_to_send):
