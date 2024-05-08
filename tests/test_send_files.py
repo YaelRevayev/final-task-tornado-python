@@ -41,7 +41,7 @@ class TestMainScript(unittest.TestCase):
         "send_files.list_files",
         return_value=[("files", ("filename", b"file_content"))],
     )
-    @patch("src.redis_operations.remove_file_from_os")
+    @patch("src.file_operations.remove_file_from_os")
     @patch("src.send_files.send_http_request")
     @patch("src.redis_operations.get_value_by_key", return_value="first_file_name")
     @patch("src.redis_operations.does_key_exists", return_value=True)
