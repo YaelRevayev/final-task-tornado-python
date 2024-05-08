@@ -22,7 +22,7 @@ class TestMainScript(unittest.TestCase):
 
     @patch("src.redis_operations.save_to_redis")
     @patch("src.redis_operations.does_key_exists", return_value=False)
-    @patch("src.file_operations.remove_extension", return_value="file_name")
+    @patch("src.file_operations.remove_extension", return_value="image100_a")
     def test_key_not_exists(
         self, mock_remove_extension, mock_does_key_exists, mock_save_to_redis
     ):
@@ -30,18 +30,18 @@ class TestMainScript(unittest.TestCase):
         error_logger_instance = MagicMock()
         with patch("src.redis_operations.redis"):
             classifyFiles(
-                "curr_filename", sender_logger_instance, error_logger_instance
+                "image100_a.jpg", sender_logger_instance, error_logger_instance
             )
 
-        mock_does_key_exists.assert_called_once_with("file_name")
-        mock_remove_extension.assert_called_once_with("curr_filename")
-        mock_save_to_redis.assert_called_once_with("file_name", "curr_filename")
+        mock_does_key_exists.assert_called_once_with("image100")
+        mock_remove_extension.assert_called_once_with("image100_a.jpg")
+        mock_save_to_redis.assert_called_once_with("image100", "image100_a.jpg")
 
     @patch(
         "send_files.list_files",
         return_value=[("files", ("filename", b"file_content"))],
     )
-    @patch("send_files.remove_file_from_os")
+    @patch("src.redis_operations.remove_file_from_os")
     @patch("send_files.send_http_request")
     @patch("src.redis_operations.get_value_by_key", return_value="first_file_name")
     @patch("src.redis_operations.does_key_exists", return_value=True)
