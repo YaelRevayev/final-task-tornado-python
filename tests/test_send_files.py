@@ -18,15 +18,18 @@ class TestMainScript(unittest.TestCase):
         self.sender_logger = MagicMock()
         self.error_logger = MagicMock()
 
-    @patch("send_files.save_to_redis")
-    @patch("send_files.does_key_exists", return_value=False)
-    @patch("send_files.remove_extension", return_value="file_name")
+    @patch("redis_operations.save_to_redis")
+    @patch("redis_operations.does_key_exists", return_value=False)
+    @patch("file_operations.remove_extension", return_value="file_name")
     def test_key_not_exists(
         self, mock_remove_extension, mock_does_key_exists, mock_save_to_redis
     ):
         sender_logger_instance = MagicMock()
         error_logger_instance = MagicMock()
-        classifyFiles("curr_filename", sender_logger_instance, error_logger_instance)
+        with patch("redis_operations.redis"):
+            classifyFiles(
+                "curr_filename", sender_logger_instance, error_logger_instance
+            )
 
         mock_does_key_exists.assert_called_once_with("file_name")
         mock_remove_extension.assert_called_once_with("curr_filename")
@@ -38,9 +41,9 @@ class TestMainScript(unittest.TestCase):
     )
     @patch("send_files.remove_file_from_os")
     @patch("send_files.send_http_request")
-    @patch("send_files.get_value_by_key", return_value="first_file_name")
-    @patch("send_files.does_key_exists", return_value=True)
-    @patch("send_files.remove_extension", return_value="file_name")
+    @patch("redis_operations.get_value_by_key", return_value="first_file_name")
+    @patch("redis_operations.does_key_exists", return_value=True)
+    @patch("file_operations.remove_extension", return_value="file_name")
     def test_key_exists(
         self,
         mock_remove_extension,
@@ -52,7 +55,10 @@ class TestMainScript(unittest.TestCase):
     ):
         sender_logger_instance = MagicMock()
         error_logger_instance = MagicMock()
-        classifyFiles("curr_filename", sender_logger_instance, error_logger_instance)
+        with patch("redis_operations.redis"):
+            classifyFiles(
+                "curr_filename", sender_logger_instance, error_logger_instance
+            )
 
         mock_does_key_exists.assert_called_once_with("file_name")
         mock_remove_extension.assert_called_once_with("curr_filename")

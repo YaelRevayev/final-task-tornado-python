@@ -1,8 +1,13 @@
 import os
 import requests
 import sys
-from file_operations import read_file, remove_extension, remove_file_from_os, list_files
-from redis_operations import *
+from .file_operations import (
+    read_file,
+    remove_extension,
+    remove_file_from_os,
+    list_files,
+)
+from .redis_operations import *
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 config_dir = os.path.join(project_dir, "config")
