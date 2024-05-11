@@ -26,9 +26,9 @@ class TestFileFunctions(unittest.TestCase):
         self.assertEqual(file_data, b"test_data")
 
     def test_remove_extension_with_mocking_filename_returns_valid_extension(self):
-        filename = "test_file.txt"
+        filename = "image100_a.jpg"
         base_filename = remove_extension(filename)
-        self.assertEqual(base_filename, "test_file")
+        self.assertEqual(base_filename, "image100_a")
 
     @patch("os.remove")
     def test_remove_file_from_os_with_mocking_file_asserting_function_called_once_with_file(
