@@ -89,10 +89,6 @@ def start_watchdog(directory, run_indefinitely=True):
 def scan_directory(directory):
     global watchdog_logger, sender_logger, error_logger
     files = os.listdir(directory)
-    print("scan_dir")
-    print(sender_logger)
-    print(watchdog_logger)
-    print(files)
     for file in files:
         watchdog_logger.info(f"Detected file: {file}")
         multiprocessing.Process(
@@ -110,6 +106,5 @@ def listen_for_file_expiration():
 
 
 def files_listener(directory):
-    print("files_lintener()")
     scan_directory(directory)
     start_watchdog(directory)
