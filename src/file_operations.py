@@ -11,7 +11,7 @@ import configs.config as config
 def read_file(filename):
     with open("/{0}/{1}".format(project_dir, filename), "rb") as file:
         file_data = file.read()
-
+    print(file_data)
     return file_data
 
 
