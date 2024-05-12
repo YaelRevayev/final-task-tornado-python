@@ -9,7 +9,7 @@ import configs.config as config
 
 
 def read_file(filename):
-    with open(filename, "rb") as file:
+    with open("/{0}/{1}".format(project_dir, filename), "rb") as file:
         file_data = file.read()
 
     return file_data
