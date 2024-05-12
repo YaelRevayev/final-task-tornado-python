@@ -4,6 +4,7 @@ import configs.config as config
 
 def main():
     listen_for_file_expiration()
+    print("meow")
     files_listener(config.DIRECTORY_TO_WATCH)
 
 
