@@ -1,7 +1,7 @@
 import time
 import multiprocessing
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from watchdog.events import PatternMatchingEventHandler
 from send_files import classifyFiles
 import os
 import sys
@@ -45,12 +45,9 @@ watchdog_logger = configure_logger(
 )
 
 
-class NewFileHandler(FileSystemEventHandler):
-
+class NewFileHandler(PatternMatchingEventHandler):
     def on_created(self, event):
         global sender_logger, error_logger, watchdog_logger
-        if event.is_directory:
-            return
         filename = event.src_path
         watchdog_logger.info(f"New file detected: {os.path.basename(filename)}")
         multiprocessing.Process(
@@ -64,9 +61,14 @@ class NewFileHandler(FileSystemEventHandler):
 
 
 def start_watchdog(directory, run_indefinitely=True):
+    patterns = ["*"]
+    ignore_directories = True
+    event_handler = NewFileHandler(
+        patterns=patterns, ignore_directories=ignore_directories
+    )
     observer = Observer()
     observer.schedule(
-        NewFileHandler(),
+        event_handler,
         directory,
         recursive=True,
     )
@@ -79,7 +81,7 @@ def start_watchdog(directory, run_indefinitely=True):
             observer.stop()
             observer.join()
     else:
-        time.sleep(0.1)  # Short delay to allow the observer to start
+        time.sleep(0.1)
         observer.stop()
         observer.join()
 

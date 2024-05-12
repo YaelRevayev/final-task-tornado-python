@@ -9,7 +9,6 @@ sys.path.append(project_dir)
 sys.path.insert(0, config_dir)
 import configs.config as config
 
-# Define a global redis client
 redis_client = redis.StrictRedis(
     host=config.REDIS_HOST_IP, port=config.REDIS_HOST_PORT, db=0
 )
