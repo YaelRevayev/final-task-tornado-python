@@ -1,0 +1,12 @@
+[Unit]
+Description=listen for new files and save parts to redis
+After=network.target
+
+[Service]
+Type=simple
+User=pure-ftpd-server
+WorkingDirectory=/home/pure-ftpd-server/final-task-tornado-python
+ExecStart=/usr/bin/python3 /home/pure-ftpd-server/final-task-tornado-python/src/main.py
+
+[Install]
+WantedBy=multi-user.target
