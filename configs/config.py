@@ -7,4 +7,4 @@ DIRECTORY_TO_WATCH = "./files_output"
 FILES_FOLDER_NAME = "files_output"
 LOGS_FOLDER_NAME = "logs"
 EXPIRY_SECONDS = 60
-SCRIPT_PATH = "./delete_expired_files.sh"
+SCRIPT_PATH = "./scripts/delete_expired_files.sh"
