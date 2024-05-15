@@ -49,9 +49,8 @@ def send_http_request(filename, first_file_name, files_to_send):
             files=files_to_send,
         )
         if response.status_code == 200:
-            sender_logger.info(
-                f"Files '{first_file_name}' , '{filename}' sent successfully."
-            )
+            sender_logger.info(f"File '{first_file_name}'  sent successfully.")
+            sender_logger.info(f"File  '{filename}' sent successfully.")
         else:
             error_logger.error(
                 f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}"
