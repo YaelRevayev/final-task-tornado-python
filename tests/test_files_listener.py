@@ -25,7 +25,7 @@ class TestFileListener(unittest.TestCase):
     @patch("src.files_listener.error_logger")  #
     @patch("src.files_listener.watchdog_logger")
     @patch("src.files_listener.multiprocessing.Process")
-    def test_on_created(
+    def test_on_created_mocking_creation_of_one_file_logger_called_once(
         self, mock_process, mock_watchdog_logger, mock_error_logger, mock_sender_logger
     ):
         event = MagicMock()
@@ -37,7 +37,9 @@ class TestFileListener(unittest.TestCase):
         mock_watchdog_logger.info.assert_called_once_with("New file detected: file.txt")
 
     @patch("src.files_listener.Observer")
-    def test_start_watchdog(self, mock_observer):
+    def test_start_watchdog_giving_nothing_asserting_functions_called(
+        self, mock_observer
+    ):
 
         directory = "/path/to/directory"
         run_indefinitely = False
@@ -52,7 +54,9 @@ class TestFileListener(unittest.TestCase):
 
     @patch("src.files_listener.os.listdir")
     @patch("src.files_listener.multiprocessing.Process")
-    def test_scan_directory(self, mock_process, mock_listdir):
+    def test_scan_directory_mocking_2_files_called_twice(
+        self, mock_process, mock_listdir
+    ):
 
         directory = "/path/to/directory"
         mock_listdir.return_value = ["file1.txt", "file2.txt"]

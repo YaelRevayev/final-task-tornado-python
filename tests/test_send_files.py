@@ -21,7 +21,7 @@ class TestMainScript(unittest.TestCase):
     @patch("src.send_files.does_key_exists", return_value=False)
     @patch("redis_operations.redis_client", return_value=MagicMock())
     @patch("src.send_files.remove_extension", return_value="image100_a")
-    def test_send_files_mocked_no_key_exists_creates_redis_key(
+    def test_classify_files_mocked_no_key_exists_creates_redis_key(
         self,
         mock_remove_extension,
         mock_redis_client,
@@ -52,7 +52,7 @@ class TestMainScript(unittest.TestCase):
     )
     @patch("src.send_files.remove_file_from_os")
     @patch("src.send_files.send_http_request", return_value=MagicMock())
-    def test_existing_file_key_exists(
+    def test_classify_files_mocking_key_exists_asserting_calling_of_different_functions(
         self,
         mock_send_http_request,
         mock_remove_file_from_os,
@@ -78,15 +78,15 @@ class TestMainScript(unittest.TestCase):
             ],
         )
         expected_calls = [
-            call("./files_output", "image100_b"),
-            call("./files_output", "image100_a.jpg"),
+            call("files_output", "image100_b"),
+            call("files_output", "image100_a.jpg"),
         ]
         mock_remove_file_from_os.assert_has_calls(expected_calls)
 
     @patch("src.send_files.sender_logger")
     @patch("src.send_files.error_logger")
     @patch("src.send_files.requests.post")
-    def test_send_http_request_success(
+    def test_send_http_request_sending_valid_list_receiving_success(
         self, mock_post, mock_error_logger, mock_sender_logger
     ):
         mock_response = MagicMock()
@@ -105,7 +105,7 @@ class TestMainScript(unittest.TestCase):
     @patch("src.send_files.sender_logger")
     @patch("src.send_files.error_logger")
     @patch("src.send_files.requests.post")
-    def test_send_http_request_failure(
+    def test_send_http_request_sending_empty_list_receiving_failure(
         self, mock_post, mock_error_logger, mock_sender_logger
     ):
         mock_response = MagicMock(status_code=404, reason="Not Found")
