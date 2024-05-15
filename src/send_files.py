@@ -53,7 +53,10 @@ def send_http_request(filename, first_file_name, files_to_send):
             sender_logger.info(f"File  '{filename}' sent successfully.")
         else:
             error_logger.error(
-                f"Error sending files '{first_file_name}' , '{filename}': {response.status_code} {response.reason}"
+                f"Error sending file '{first_file_name}': {response.status_code} {response.reason}"
+            )
+            error_logger.error(
+                f"Error sending file '{filename}': {response.status_code} {response.reason}"
             )
     except Exception as e:
         error_logger.error(f"Exception occurred: {e}")
