@@ -3,4 +3,4 @@ _pyache/
 # Ignore output files
 files_output/
 
-
+logs/*
