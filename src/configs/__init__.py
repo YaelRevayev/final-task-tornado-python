@@ -1,15 +1,17 @@
 import yaml
 import os
+import sys
 
 
 def load_config(config_file):
-    print(os.getcwd())
+    project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+    os.chdir(project_dir)
     with open(config_file, "r") as file:
         config = yaml.safe_load(file)
     return config
 
 
-config_file = "./src/configs/config.yaml"
+config_file = "configs/config.yaml"
 config = load_config(config_file)
 
 

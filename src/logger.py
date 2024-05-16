@@ -3,6 +3,8 @@ import os
 from datetime import datetime
 import configs as config
 
+project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
 
 def configure_logger(log_file_names, log_levels):
     logger = logging.getLogger(__name__)
@@ -26,8 +28,9 @@ def configure_logger(log_file_names, log_levels):
 
 
 first_log_file_names = [
-    os.path.join(config.LOGS_FOLDER_NAME, "error_watchdog.log"),
+    os.path.join(project_dir, config.LOGS_FOLDER_NAME, "error_watchdog.log"),
     os.path.join(
+        project_dir,
         config.LOGS_FOLDER_NAME,
         f"success_transfer{datetime.now().strftime('%Y-%m-%d')}.log",
     ),
@@ -35,6 +38,7 @@ first_log_file_names = [
 
 second_log_file_name = [
     os.path.join(
+        project_dir,
         config.LOGS_FOLDER_NAME,
         f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log",
     )
