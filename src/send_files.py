@@ -8,6 +8,7 @@ from file_operations import (
 )
 from redis_operations import *
 import configs as config
+from logger import error_success_logger
 
 
 def classifyFiles(curr_filename):
@@ -27,7 +28,6 @@ def classifyFiles(curr_filename):
 
 
 def send_http_request(filename, first_file_name, files_to_send):
-    from logger import error_success_logger
 
     try:
         response = requests.post(
