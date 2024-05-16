@@ -1,13 +1,7 @@
 import os
 import sys
 import redis
-
-project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-config_dir = os.path.join(project_dir, "config")
-
-sys.path.append(project_dir)
-sys.path.insert(0, config_dir)
-import configs.config as config
+import configs as config
 
 redis_client = redis.StrictRedis(
     host=config.REDIS_HOST_IP, port=config.REDIS_HOST_PORT, db=0

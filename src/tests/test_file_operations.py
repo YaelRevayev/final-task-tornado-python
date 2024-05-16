@@ -3,10 +3,9 @@ from unittest.mock import patch, MagicMock
 import os
 import sys
 
-project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-sys.path.append(project_dir)
-sys.path.insert(0, "./src")
-from src.file_operations import (
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from file_operations import (
     read_file,
     remove_extension,
     remove_file_from_os,

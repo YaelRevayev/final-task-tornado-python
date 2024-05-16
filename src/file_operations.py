@@ -1,11 +1,7 @@
 import os
-import sys
+import configs as config
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-src_dir = os.path.join(project_dir, "config")
-sys.path.append(project_dir)
-sys.path.insert(0, src_dir)
-import configs.config as config
 
 
 def read_file(filename):

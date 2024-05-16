@@ -1,14 +1,52 @@
 import logging
+import os
 from datetime import datetime
+import configs as config
 
 
-def configure_logger(logger_name, log_file_name, log_level=logging.INFO):
-    logger = logging.getLogger(logger_name)
-    handler = logging.FileHandler(log_file_name)
+def configure_logger(log_file_names, log_levels):
+    logger = logging.getLogger(__name__)
     formatter = logging.Formatter(
         "%(asctime)s - %(filename)s - %(levelname)s - %(message)s"
     )
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.setLevel(log_level)
+
+    # Clear existing handlers to avoid duplicate logs
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+
+    # Create a single file handler
+    for file_name in log_file_names:
+        handler = logging.FileHandler(file_name)
+        handler.setFormatter(formatter)
+        handler.setLevel(log_levels[file_name])  # Set level dynamically
+        logger.addHandler(handler)
+
+    logger.setLevel(logging.DEBUG)  # Set logger level to DEBUG to catch all messages
     return logger
+
+
+first_log_file_names = [
+    os.path.join(config.LOGS_FOLDER_NAME, "error_watchdog.log"),
+    os.path.join(
+        config.LOGS_FOLDER_NAME,
+        f"success_transfer{datetime.now().strftime('%Y-%m-%d')}.log",
+    ),
+]
+
+second_log_file_name = [
+    os.path.join(
+        config.LOGS_FOLDER_NAME,
+        f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log",
+    )
+]
+
+
+log_levels = {
+    first_log_file_names[0]: logging.ERROR,
+    first_log_file_names[1]: logging.INFO,
+    second_log_file_name[0]: logging.INFO,
+}
+
+
+error_success_logger = configure_logger(first_log_file_names, log_levels)
+detected_files_logger = configure_logger(second_log_file_name, log_levels)

@@ -1,6 +1,5 @@
 import os
 import requests
-import sys
 from file_operations import (
     read_file,
     remove_extension,
@@ -8,21 +7,11 @@ from file_operations import (
     list_files,
 )
 from redis_operations import *
-
-project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-config_dir = os.path.join(project_dir, "config")
-sys.path.append(project_dir)
-sys.path.insert(0, config_dir)
-import configs.config as config
-
-global sender_logger
-global error_logger
+import configs as config
+from logger import error_success_logger
 
 
-def classifyFiles(curr_filename, sender_logger_instance, error_logger_instance):
-    global sender_logger, error_logger
-    sender_logger = sender_logger_instance
-    error_logger = error_logger_instance
+def classifyFiles(curr_filename):
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
@@ -49,14 +38,14 @@ def send_http_request(filename, first_file_name, files_to_send):
             files=files_to_send,
         )
         if response.status_code == 200:
-            sender_logger.info(f"File '{first_file_name}'  sent successfully.")
-            sender_logger.info(f"File  '{filename}' sent successfully.")
+            error_success_logger.info(f"File '{first_file_name}'  sent successfully.")
+            error_success_logger.info(f"File  '{filename}' sent successfully.")
         else:
-            error_logger.error(
+            error_success_logger.error(
                 f"Error sending file '{first_file_name}': {response.status_code} {response.reason}"
             )
-            error_logger.error(
+            error_success_logger.error(
                 f"Error sending file '{filename}': {response.status_code} {response.reason}"
             )
     except Exception as e:
-        error_logger.error(f"Exception occurred: {e}")
+        error_success_logger.error(f"Exception occurred: {e}")

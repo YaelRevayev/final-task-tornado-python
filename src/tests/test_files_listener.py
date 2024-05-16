@@ -3,15 +3,13 @@ from unittest.mock import MagicMock, patch
 import os
 import sys
 
-project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-sys.path.append(project_dir)
-sys.path.insert(0, "./src")
-from src.files_listener import (
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from files_listener import (
     NewFileHandler,
     start_watchdog,
     scan_directory,
 )
-from src.send_files import *
+from send_files import *
 
 
 class TestFileListener(unittest.TestCase):
@@ -21,12 +19,12 @@ class TestFileListener(unittest.TestCase):
         self.watchdog_logger.info = MagicMock()
         self.error_logger = MagicMock()
 
-    @patch("src.files_listener.sender_logger")
-    @patch("src.files_listener.error_logger")  #
-    @patch("src.files_listener.watchdog_logger")
-    @patch("src.files_listener.multiprocessing.Process")
+    @patch("files_listener.detected_files_logger")
+    @patch("files_listener.multiprocessing.Process")
     def test_on_created_mocking_creation_of_one_file_logger_called_once(
-        self, mock_process, mock_watchdog_logger, mock_error_logger, mock_sender_logger
+        self,
+        mock_process,
+        mock_detected_files_logger,
     ):
         event = MagicMock()
         event.is_directory = False
@@ -34,9 +32,11 @@ class TestFileListener(unittest.TestCase):
 
         handler = NewFileHandler()
         handler.on_created(event)
-        mock_watchdog_logger.info.assert_called_once_with("New file detected: file.txt")
+        mock_detected_files_logger.info.assert_called_once_with(
+            "New file detected: file.txt"
+        )
 
-    @patch("src.files_listener.Observer")
+    @patch("files_listener.Observer")
     def test_start_watchdog_giving_nothing_asserting_functions_called(
         self, mock_observer
     ):
@@ -52,8 +52,8 @@ class TestFileListener(unittest.TestCase):
         actual_handler = mock_observer_instance.schedule.call_args[0][0]
         self.assertEqual(expected_handler.__class__, actual_handler.__class__)
 
-    @patch("src.files_listener.os.listdir")
-    @patch("src.files_listener.multiprocessing.Process")
+    @patch("files_listener.os.listdir")
+    @patch("files_listener.multiprocessing.Process")
     def test_scan_directory_mocking_2_files_called_twice(
         self, mock_process, mock_listdir
     ):
