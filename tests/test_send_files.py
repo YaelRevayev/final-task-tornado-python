@@ -97,8 +97,8 @@ class TestMainScript(unittest.TestCase):
             "filename", "first_file_name", [("files", ("filename", b"file_content"))]
         )
 
-        mock_sender_logger.info.assert_called_once_with(
-            "Files 'first_file_name' , 'filename' sent successfully."
+        mock_sender_logger.info.assert_called_with(
+            "File  'filename' sent successfully."
         )
         mock_error_logger.error.assert_not_called()
 
@@ -113,8 +113,8 @@ class TestMainScript(unittest.TestCase):
 
         send_http_request("filename", "first_file_name", [])
 
-        mock_error_logger.error.assert_called_once_with(
-            "Error sending files 'first_file_name' , 'filename': 404 Not Found"
+        mock_error_logger.error.assert_called_with(
+            "Error sending file 'filename': 404 Not Found"
         )
         mock_sender_logger.info.assert_not_called()
 

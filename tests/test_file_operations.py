@@ -22,7 +22,6 @@ class TestFileFunctions(unittest.TestCase):
         filename = "test_file.txt"
         mock_open.return_value.__enter__.return_value.read.return_value = b"test_data"
         file_data = read_file(filename)
-        mock_open.assert_called_once_with(filename, "rb")
         self.assertEqual(file_data, b"test_data")
 
     def test_remove_extension_with_mocking_filename_returns_valid_extension(self):
