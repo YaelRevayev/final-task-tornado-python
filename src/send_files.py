@@ -8,7 +8,6 @@ from file_operations import (
 )
 from redis_operations import *
 import configs as config
-from logger import error_success_logger
 
 
 def classifyFiles(curr_filename):
@@ -28,7 +27,8 @@ def classifyFiles(curr_filename):
 
 
 def send_http_request(filename, first_file_name, files_to_send):
-    global sender_logger, error_logger
+    from logger import error_success_logger
+
     try:
         response = requests.post(
             "http://{ip}:{port}/merge_and_sign".format(

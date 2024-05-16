@@ -6,12 +6,14 @@ from send_files import classifyFiles
 import os
 import subprocess
 from datetime import datetime
-from logger import detected_files_logger
+
 import configs as config
 
 
 class NewFileHandler(PatternMatchingEventHandler):
     def on_created(self, event):
+        from logger import detected_files_logger
+
         filename = event.src_path
         detected_files_logger.info(f"New file detected: {os.path.basename(filename)}")
         multiprocessing.Process(
@@ -43,6 +45,8 @@ def start_watchdog(directory, run_indefinitely=True):
 
 
 def scan_directory(directory):
+    from logger import detected_files_logger
+
     files = os.listdir(directory)
     for file in files:
         detected_files_logger.info(f"Detected file: {file}")

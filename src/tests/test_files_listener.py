@@ -4,22 +4,12 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from files_listener import (
-    NewFileHandler,
-    start_watchdog,
-    scan_directory,
-)
-from send_files import *
+from files_listener import NewFileHandler, start_watchdog, scan_directory
 
 
 class TestFileListener(unittest.TestCase):
-    def setUp(self):
-        self.sender_logger = MagicMock()
-        self.watchdog_logger = MagicMock()
-        self.watchdog_logger.info = MagicMock()
-        self.error_logger = MagicMock()
 
-    @patch("files_listener.detected_files_logger")
+    @patch("logger.detected_files_logger")
     @patch("files_listener.multiprocessing.Process")
     def test_on_created_mocking_creation_of_one_file_logger_called_once(
         self,
