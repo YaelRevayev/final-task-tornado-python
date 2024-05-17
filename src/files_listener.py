@@ -4,7 +4,7 @@ from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from send_files import (
     classifyFiles,
-)  # Ensure classifyFiles takes a single filename argument
+)
 import os
 import subprocess
 from datetime import datetime
