@@ -1,6 +1,5 @@
-# Ignore Python cache files
+
 _pyache/
-# Ignore output files
-files_output/
+
 
 logs/*
