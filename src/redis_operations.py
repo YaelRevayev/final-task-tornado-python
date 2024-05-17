@@ -4,7 +4,11 @@ import redis
 import configs as config
 
 redis_client = redis.StrictRedis(
-    host=config.REDIS_HOST_IP, port=config.REDIS_HOST_PORT, db=0
+    host=config.REDIS_HOST_IP,
+    port=config.REDIS_HOST_PORT,
+    db=0,
+    socket_keepalive=True,
+    retry_on_timeout=True,
 )
 
 
