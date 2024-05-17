@@ -9,15 +9,12 @@ redis_client = redis.StrictRedis(
 
 
 def save_to_redis(key, value):
-    global redis_client
     redis_client.set(key, value, ex=config.EXPIRY_SECONDS)
 
 
 def does_key_exists(full_file_name):
-    global redis_client
     return redis_client.exists(full_file_name)
 
 
 def get_value_by_key(full_file_name):
-    global redis_client
     return redis_client.get(full_file_name).decode("utf-8")
