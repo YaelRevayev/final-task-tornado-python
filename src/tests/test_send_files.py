@@ -68,8 +68,8 @@ class TestMainScript(unittest.TestCase):
             ],
         )
         expected_calls = [
-            call("files_output", "image100_b"),
-            call("files_output", "image100_a.jpg"),
+            call("../files_output", "image100_b"),
+            call("../files_output", "image100_a.jpg"),
         ]
         mock_remove_file_from_os.assert_has_calls(expected_calls)
 
