@@ -1,5 +1,5 @@
 from files_listener import files_listener, listen_for_file_expiration
-import configs.config as config
+import configs as config
 import multiprocessing
 
 
@@ -8,7 +8,6 @@ def main():
         target=listen_for_file_expiration,
         args=(),
     ).start()
-    print("meow")
     files_listener(config.DIRECTORY_TO_WATCH)
 
 
