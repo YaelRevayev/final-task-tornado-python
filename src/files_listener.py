@@ -19,7 +19,7 @@ class NewFileHandler(PatternMatchingEventHandler):
         detected_files_logger.info(f"New file detected: {os.path.basename(filename)}")
         multiprocessing.Process(
             target=classifyFiles,
-            args=(filename,),  # Ensure this is a tuple
+            args=(filename,),
         ).start()
 
 
@@ -50,10 +50,12 @@ def scan_directory(directory):
 
     files = os.listdir(directory)
     for file in files:
+        if file == ".gitkeep":
+            continue
         detected_files_logger.info(f"Detected file: {file}")
         multiprocessing.Process(
             target=classifyFiles,
-            args=(os.path.join(directory, file),),  # Ensure this is a tuple
+            args=(os.path.join(directory, file),),
         ).start()
 
 
