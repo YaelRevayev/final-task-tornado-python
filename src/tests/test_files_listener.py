@@ -60,8 +60,8 @@ class TestFileListener(unittest.TestCase):
         mock_logger.info.assert_has_calls(expected_log_calls, any_order=True)
 
         expected_process_calls = [
-            call(target=mock_classifyFiles, args=(f"{directory}\\file1_a.jpg",)),
-            call(target=mock_classifyFiles, args=(f"{directory}\\file2_b",)),
+            call(target=mock_classifyFiles, args=(f"{directory}/file1_a.jpg",)),
+            call(target=mock_classifyFiles, args=(f"{directory}/file2_b",)),
         ]
         MockProcess.assert_has_calls(expected_process_calls, any_order=True)
         self.assertEqual(MockProcess.return_value.start.call_count, 2)
