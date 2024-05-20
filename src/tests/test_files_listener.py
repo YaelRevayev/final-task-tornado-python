@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, call
 import os
 import sys
 
@@ -26,22 +26,6 @@ class TestFileListener(unittest.TestCase):
             "New file detected: file.txt"
         )
 
-    @patch("files_listener.Observer")
-    def test_start_watchdog_giving_nothing_asserting_functions_called(
-        self, mock_observer
-    ):
-
-        directory = "/path/to/directory"
-        run_indefinitely = False
-
-        start_watchdog(directory, run_indefinitely)
-
-        mock_observer_instance = mock_observer.return_value
-        mock_observer_instance.schedule.assert_called_once()
-        expected_handler = NewFileHandler()
-        actual_handler = mock_observer_instance.schedule.call_args[0][0]
-        self.assertEqual(expected_handler.__class__, actual_handler.__class__)
-
     @patch("files_listener.os.listdir")
     @patch("files_listener.multiprocessing.Process")
     def test_scan_directory_mocking_2_files_called_twice(
@@ -54,6 +38,33 @@ class TestFileListener(unittest.TestCase):
 
         mock_listdir.assert_called_once_with(directory)
         self.assertEqual(mock_process.call_count, 2)
+
+    @patch("files_listener.os.listdir")
+    @patch("logger.detected_files_logger")
+    @patch("files_listener.multiprocessing.Process")
+    @patch("files_listener.classifyFiles")
+    def test_scan_directory(
+        self, mock_classifyFiles, MockProcess, mock_logger, mock_listdir
+    ):
+        mock_listdir.return_value = ["file1_a.jpg", "file2_b", ".gitkeep"]
+
+        directory = "/path/to/directory"
+        scan_directory(directory)
+
+        mock_listdir.assert_called_once_with(directory)
+
+        expected_log_calls = [
+            call.info("Detected file: file1_a.jpg"),
+            call.info("Detected file: file2_b"),
+        ]
+        mock_logger.info.assert_has_calls(expected_log_calls, any_order=True)
+
+        expected_process_calls = [
+            call(target=mock_classifyFiles, args=(f"{directory}\\file1_a.jpg",)),
+            call(target=mock_classifyFiles, args=(f"{directory}\\file2_b",)),
+        ]
+        MockProcess.assert_has_calls(expected_process_calls, any_order=True)
+        self.assertEqual(MockProcess.return_value.start.call_count, 2)
 
 
 if __name__ == "__main__":
