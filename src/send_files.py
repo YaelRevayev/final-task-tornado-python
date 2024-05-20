@@ -1,7 +1,6 @@
 import os
 import requests
 from file_operations import (
-    read_file,
     remove_extension,
     remove_file_from_os,
     list_files,

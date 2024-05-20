@@ -16,14 +16,13 @@ def configure_logger(logger_name, log_file_names, log_levels):
     for handler in logger.handlers[:]:
         logger.removeHandler(handler)
 
-    # Create and add handlers
     for file_name in log_file_names:
         handler = logging.FileHandler(file_name)
         handler.setFormatter(formatter)
         handler.setLevel(log_levels[file_name])
         logger.addHandler(handler)
 
-    logger.setLevel(logging.DEBUG)  
+    logger.setLevel(logging.DEBUG)
     return logger
 
 
@@ -56,5 +55,3 @@ error_success_logger = configure_logger(
 detected_files_logger = configure_logger(
     "detected_files_logger", second_log_file_name, log_levels
 )
-
-

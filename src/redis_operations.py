@@ -1,5 +1,3 @@
-import os
-import sys
 import redis
 import configs as config
 

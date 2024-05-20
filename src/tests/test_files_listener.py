@@ -11,7 +11,7 @@ class TestFileListener(unittest.TestCase):
 
     @patch("logger.detected_files_logger")
     @patch("files_listener.multiprocessing.Process")
-    def test_on_created_mocking_creation_of_one_file_logger_called_once(
+    def test_on_created_mocking_creation_of_one_file_logger_should_be_called_once(
         self,
         mock_process,
         mock_detected_files_logger,
@@ -43,7 +43,7 @@ class TestFileListener(unittest.TestCase):
     @patch("logger.detected_files_logger")
     @patch("files_listener.multiprocessing.Process")
     @patch("files_listener.classifyFiles")
-    def test_scan_directory(
+    def test_scan_directory_mocking_three_files_should_open_two_processes(
         self, mock_classifyFiles, MockProcess, mock_logger, mock_listdir
     ):
         mock_listdir.return_value = ["file1_a.jpg", "file2_b", ".gitkeep"]
