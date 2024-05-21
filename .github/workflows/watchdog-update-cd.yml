@@ -36,9 +36,9 @@ jobs:
             cd "$REPO_DIR"
             git reset --hard HEAD
             git pull
-            
+
             sudo cp "$REPO_DIR/dependencies/watchdog.service" /etc/systemd/system/
-            sudo systemctl enable watchdog.service
+            sudo systemctl enable watchdog
             sudo sed -i "s|\${USER}|${{ env.VM_USERNAME }}|g" /etc/systemd/system/watchdog.service
             sudo sed -i "s|\${WORKING_DIRECTORY}|$REPO_DIR|g" /etc/systemd/system/watchdog.service
             cd "$REPO_DIR"
