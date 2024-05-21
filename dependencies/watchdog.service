@@ -4,8 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-User=pure-ftpd-server
-WorkingDirectory=/home/pure-ftpd-server/final-task-tornado-python
+# The user is provided via cd
+User=${USER}
+# The working directory is provided via cd
+WorkingDirectory=${WORKING_DIRECTORY}
 ExecStart=/usr/bin/python3 /home/pure-ftpd-server/final-task-tornado-python/src/main.py
 
 [Install]
