@@ -10,15 +10,26 @@ import configs as config
 from logger import error_success_logger
 
 
+def get_storage(storage_type):
+    if storage_type == "redis":
+        return RedisStorage()
+    else:
+        raise ValueError(f"Unsupported storage type: {storage_type}")
+
+
+storage_type = config.STORAGE_TYPE
+storage = get_storage(storage_type)
+
+
 def classifyFiles(curr_filename):
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
-    if not does_key_exists(full_file_name):
-        save_to_redis(full_file_name, curr_filename)
+    if not storage.does_key_exists(full_file_name):
+        storage.save_to_redis(full_file_name, curr_filename)
 
     else:
-        first_file_name = get_value_by_key(full_file_name)
+        first_file_name = storage.get_value_by_key(full_file_name)
         if first_file_name != curr_filename:
             files_to_send = list_files(curr_filename, first_file_name)
             send_http_request(curr_filename, first_file_name, files_to_send)

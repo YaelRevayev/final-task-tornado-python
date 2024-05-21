@@ -1,22 +1,23 @@
 import redis
 import configs as config
-
-redis_client = redis.StrictRedis(
-    host=config.REDIS_HOST_IP,
-    port=config.REDIS_HOST_PORT,
-    db=0,
-    socket_keepalive=True,
-    retry_on_timeout=True,
-)
+from base_storage import BaseStorage
 
 
-def save_to_redis(key, value):
-    redis_client.set(key, value, ex=config.EXPIRY_SECONDS)
+class RedisStorage(BaseStorage):
+    def __init__(self):
+        self.client = redis.StrictRedis(
+            host=config.REDIS_HOST_IP,
+            port=config.REDIS_HOST_PORT,
+            db=0,
+            socket_keepalive=True,
+            retry_on_timeout=True,
+        )
 
+    def save(self, key, value):
+        self.client.set(key, value, ex=config.EXPIRY_SECONDS)
 
-def does_key_exists(full_file_name):
-    return redis_client.exists(full_file_name)
+    def exists(self, key):
+        return self.client.exists(key)
 
-
-def get_value_by_key(full_file_name):
-    return redis_client.get(full_file_name).decode("utf-8")
+    def get(self, key):
+        return self.client.get(key).decode("utf-8")
