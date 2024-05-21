@@ -36,13 +36,18 @@ log_files = {
         config.LOGS_FOLDER_NAME,
         f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log",
     ): logging.INFO,
+    os.path.join(
+        project_dir,
+        config.LOGS_FOLDER_NAME,
+        f"debug{datetime.now().strftime('%Y-%m-%d')}.log",
+    ): logging.DEBUG,
 }
 
 # Split the log files for different loggers
 error_success_log_files = {
     k: v
     for k, v in log_files.items()
-    if "error_watchdog" in k or "success_transfer" in k
+    if "error_watchdog" in k or "success_transfer" or "debug" in k
 }
 detected_files_log_files = {k: v for k, v in log_files.items() if "detected_files" in k}
 

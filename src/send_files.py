@@ -25,6 +25,7 @@ lock = multiprocessing.Lock()
 
 
 def classifyFiles(curr_filename: str):
+    error_or_success_logger.debug(f"opened new process for {curr_filename}")
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
@@ -45,7 +46,6 @@ def process_file():
 
 
 def send_http_request(filename: str, first_file_name: str, files_to_send: list):
-
     try:
         response = requests.post(
             "http://{ip}:{port}/merge_and_sign".format(
@@ -54,6 +54,7 @@ def send_http_request(filename: str, first_file_name: str, files_to_send: list):
             ),
             files=files_to_send,
         )
+        error_or_success_logger.debug("sending http request...")
         if response.status_code == 200:
             error_or_success_logger.info(
                 f"File '{first_file_name}'  sent successfully."

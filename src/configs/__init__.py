@@ -36,5 +36,5 @@ def load_config(config_file):
     )
 
 
-config_file = "configs/config.yaml"
+config_file = "../configs/config.yaml"
 config = load_config(config_file)

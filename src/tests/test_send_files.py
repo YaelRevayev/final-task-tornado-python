@@ -73,7 +73,7 @@ class TestMainScript(unittest.TestCase):
         ]
         mock_remove_file_from_os.assert_has_calls(expected_calls)
 
-    @patch("send_files.error_success_logger")
+    @patch("logger.error_or_success_logger")
     @patch("send_files.requests.post")
     def test_send_http_request_sending_valid_list_receiving_success(
         self, mock_post, mock_error_success_logger
@@ -91,7 +91,7 @@ class TestMainScript(unittest.TestCase):
         )
         mock_error_success_logger.error.assert_not_called()
 
-    @patch("send_files.error_success_logger")
+    @patch("logger.error_or_success_logger")
     @patch("send_files.requests.post")
     def test_send_http_request_sending_empty_list_receiving_failure(
         self, mock_post, mock_error_success_logger
