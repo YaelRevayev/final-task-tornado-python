@@ -4,12 +4,12 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from files_listener import NewFileHandler, start_watchdog, scan_directory
+from files_listener import NewFileHandler, scan_directory
 
 
 class TestFileListener(unittest.TestCase):
 
-    @patch("logger.detected_files_logger")
+    @patch("files_listener.detected_files_logger")
     @patch("files_listener.multiprocessing.Process")
     def test_on_created_mocking_creation_of_one_file_logger_should_be_called_once(
         self,
@@ -40,7 +40,7 @@ class TestFileListener(unittest.TestCase):
         self.assertEqual(mock_process.call_count, 2)
 
     @patch("files_listener.os.listdir")
-    @patch("logger.detected_files_logger")
+    @patch("files_listener.detected_files_logger")
     @patch("files_listener.multiprocessing.Process")
     @patch("files_listener.classifyFiles")
     def test_scan_directory_mocking_three_files_should_open_two_processes(

@@ -1,5 +1,5 @@
 import redis
-import configs as config
+from configs import config
 from base_storage import BaseStorage
 
 

@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime
-import configs as config
+from configs import config
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
