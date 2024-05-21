@@ -23,7 +23,7 @@ class NewFileHandler(PatternMatchingEventHandler):
         ).start()
 
 
-def start_watchdog(directory):
+def start_watchdog(directory: str):
     observer = Observer()
     observer.schedule(NewFileHandler(), directory, recursive=True)
     observer.start()
@@ -36,7 +36,7 @@ def start_watchdog(directory):
     observer.join()
 
 
-def scan_directory(directory):
+def scan_directory(directory: str):
     from logger import detected_files_logger
 
     files = os.listdir(directory)

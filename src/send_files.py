@@ -8,9 +8,10 @@ from file_operations import (
 from redis_operations import *
 import configs as config
 from logger import error_success_logger
+from base_storage import BaseStorage
 
 
-def get_storage(storage_type):
+def get_storage(storage_type: str) -> BaseStorage:
     if storage_type == "redis":
         return RedisStorage()
     else:
@@ -21,7 +22,7 @@ storage_type = config.STORAGE_TYPE
 storage = get_storage(storage_type)
 
 
-def classifyFiles(curr_filename):
+def classifyFiles(curr_filename: str):
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
@@ -37,7 +38,7 @@ def classifyFiles(curr_filename):
             remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
 
 
-def send_http_request(filename, first_file_name, files_to_send):
+def send_http_request(filename: str, first_file_name: str, files_to_send: list):
 
     try:
         response = requests.post(

@@ -13,11 +13,11 @@ class RedisStorage(BaseStorage):
             retry_on_timeout=True,
         )
 
-    def save(self, key, value):
+    def save(self, key: str, value: str):
         self.client.set(key, value, ex=config.EXPIRY_SECONDS)
 
-    def exists(self, key):
+    def exists(self, key: str):
         return self.client.exists(key)
 
-    def get(self, key):
+    def get(self, key: str):
         return self.client.get(key).decode("utf-8")
