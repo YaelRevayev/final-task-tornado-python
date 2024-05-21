@@ -46,7 +46,9 @@ error_success_log_files = {
 }
 detected_files_log_files = {k: v for k, v in log_files.items() if "detected_files" in k}
 
-error_success_logger = configure_logger("error_success_logger", error_success_log_files)
+error_or_success_logger = configure_logger(
+    "error_success_logger", error_success_log_files
+)
 detected_files_logger = configure_logger(
     "detected_files_logger", detected_files_log_files
 )
