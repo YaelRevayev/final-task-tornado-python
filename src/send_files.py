@@ -21,8 +21,6 @@ def get_storage(storage_type: str) -> BaseStorage:
 
 storage_type = config.STORAGE_TYPE
 storage = get_storage(storage_type)
-
-
 lock = multiprocessing.Lock()
 
 
@@ -40,6 +38,10 @@ def classifyFiles(curr_filename: str):
                 send_http_request(curr_filename, first_file_name, files_to_send)
                 remove_file_from_os(config.DIRECTORY_TO_WATCH, first_file_name)
                 remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
+
+
+def process_file():
+    pass
 
 
 def send_http_request(filename: str, first_file_name: str, files_to_send: list):

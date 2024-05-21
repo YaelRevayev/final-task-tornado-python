@@ -3,6 +3,6 @@ _pyache/
 
 **/__pycache__/
 
-files_output/*
+files_output/
 
-logs/*
+logs/
