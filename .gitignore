@@ -1,6 +1,8 @@
 
 _pyache/
 
+**/__pycache__/
+
 files_output/*
 
 logs/*
