@@ -7,6 +7,7 @@ from configs import config as config
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 
+
 def configure_logger(logger_name: str, log_files: dict):
     logger = logging.getLogger(logger_name)
     formatter = logging.Formatter(
