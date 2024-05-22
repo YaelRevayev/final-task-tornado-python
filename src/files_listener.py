@@ -51,4 +51,3 @@ def files_listener(directory):
     pool = Pool()
     scan_directory(directory, pool)
     start_watchdog(directory, pool)
-    listener_process.join()
