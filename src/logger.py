@@ -19,7 +19,6 @@ def configure_logger(logger_name: str, log_files: dict):
         handler.setLevel(level)
         logger.addHandler(handler)
 
-    logger.setLevel(logging.DEBUG)
     return logger
 
 
