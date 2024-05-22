@@ -46,12 +46,3 @@ log_files = {
 
 error_or_success_logger = configure_logger("error_success_logger", log_files)
 detected_files_logger = configure_logger("detected_files_logger", log_files)
-
-# Test logging
-error_or_success_logger.debug("Debug message")
-error_or_success_logger.info("Info message")
-error_or_success_logger.error("Error message")
-
-detected_files_logger.debug("Detected files debug message")
-detected_files_logger.info("Detected files info message")
-detected_files_logger.error("Detected files error message")
