@@ -32,7 +32,9 @@ def classifyFiles(curr_filename: str):
         lock.acquire()
         if not storage.exists(full_file_name):
             storage.save(full_file_name, curr_filename)
+            error_or_success_logger.debug("no key exists")
         else:
+            error_or_success_logger.debug("key does exists")
             first_file_name = storage.get(full_file_name)
             if first_file_name != curr_filename:
                 files_to_send = list_files(curr_filename, first_file_name)
