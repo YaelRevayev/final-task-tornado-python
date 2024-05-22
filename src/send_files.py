@@ -30,7 +30,6 @@ def classifyFiles(curr_filename: str):
     try:
         # Acquire lock to ensure exclusive access
         lock.acquire()
-        error_or_success_logger.debug("classify files ---> ....")
         if not storage.exists(full_file_name):
             storage.save(full_file_name, curr_filename)
         else:

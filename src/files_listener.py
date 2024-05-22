@@ -25,8 +25,6 @@ class NewFileHandler(PatternMatchingEventHandler):
 def scan_directory(directory: str, pool):
     files = os.listdir(directory)
     for file in files:
-        if file == ".gitkeep":
-            continue
         detected_files_logger.info(f"Detected file: {file}")
         pool.apply_async(classifyFiles, args=(os.path.join(directory, file),))
 
