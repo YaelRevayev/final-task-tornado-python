@@ -45,7 +45,7 @@ def start_watchdog(directory: str, pool):
 
 
 def listen_for_file_expiration():
-    detected_files_logger.info(f"Starting script monitoring file created over 1m")
+    error_or_success_logger.debug(f"Starting script monitoring file created over 1m")
     subprocess.run(["bash", config.SCRIPT_PATH, config.DIRECTORY_TO_WATCH])
 
 
