@@ -44,5 +44,14 @@ log_files = {
     ): logging.DEBUG,
 }
 
-error_or_success_logger = configure_logger("error_success_logger", log_files)
-detected_files_logger = configure_logger("detected_files_logger", log_files)
+error_success_log_files = {
+    k: v
+    for k, v in log_files.items()
+    if "error_watchdog" in k or "success_transfer" in k
+}
+detected_files_log_files = {k: v for k, v in log_files.items() if "detected_files" in k}
+
+error_or_success_logger = configure_logger("error_or_success", error_success_log_files)
+detected_files_logger = configure_logger(
+    "detected_files_logger", detected_files_log_files
+)
