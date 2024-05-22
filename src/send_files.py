@@ -26,15 +26,17 @@ def classifyFiles(curr_filename: str):
     error_or_success_logger.debug(f"opened new process for {curr_filename}")
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
-
+    error_or_success_logger.debug("in classify files before condition")
     try:
         # Acquire lock to ensure exclusive access
         lock.acquire()
         if not storage.exists(full_file_name):
             storage.save(full_file_name, curr_filename)
             error_or_success_logger.debug("no key exists")
+            print("key not exists")
         else:
             error_or_success_logger.debug("key does exists")
+            print("key exists")
             first_file_name = storage.get(full_file_name)
             if first_file_name != curr_filename:
                 files_to_send = list_files(curr_filename, first_file_name)
