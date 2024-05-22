@@ -6,7 +6,6 @@ from logger import error_or_success_logger
 
 def main():
     try:
-        error_or_success_logger.debug("meow")
         multiprocessing.Process(
             target=listen_for_file_expiration,
             args=(),

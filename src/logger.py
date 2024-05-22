@@ -18,6 +18,12 @@ def configure_logger(logger_name: str, log_files: dict):
         handler.setLevel(level)
         logger.addHandler(handler)
 
+    # Add a console handler for logging debug messages to the console
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
     return logger
 
 
@@ -47,7 +53,7 @@ log_files = {
 error_success_log_files = {
     k: v
     for k, v in log_files.items()
-    if "error_watchdog" in k or "success_transfer" in k
+    if "error_watchdog" in k or "success_transfer" in k or "debug" in k
 }
 detected_files_log_files = {k: v for k, v in log_files.items() if "detected_files" in k}
 
