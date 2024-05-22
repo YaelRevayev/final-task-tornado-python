@@ -1,5 +1,5 @@
 import time
-from configs import config
+from configs import config as config
 from multiprocessing import Pool
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler

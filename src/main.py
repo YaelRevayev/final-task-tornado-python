@@ -1,5 +1,5 @@
+from configs import config as config
 from files_listener import files_listener, listen_for_file_expiration
-import configs as config
 import multiprocessing
 from logger import error_or_success_logger
 

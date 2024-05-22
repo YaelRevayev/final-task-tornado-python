@@ -6,7 +6,7 @@ from file_operations import (
     list_files,
 )
 from redis_operations import RedisStorage
-from configs import config
+from configs import config as config
 from logger import error_or_success_logger
 from base_storage import BaseStorage
 import multiprocessing
