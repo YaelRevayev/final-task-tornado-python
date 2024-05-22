@@ -4,11 +4,10 @@ from datetime import datetime
 from configs import config as config
 
 
-project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-
-
 def configure_logger(logger_name: str, log_files: dict):
     logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.DEBUG)  # Set the logger level to DEBUG to log all messages
+
     formatter = logging.Formatter(
         "%(asctime)s - %(filename)s - %(levelname)s - %(message)s"
     )
@@ -22,6 +21,8 @@ def configure_logger(logger_name: str, log_files: dict):
     return logger
 
 
+project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
 log_files = {
     os.path.join(
         project_dir, config.LOGS_FOLDER_NAME, "error_watchdog.log"
@@ -29,31 +30,28 @@ log_files = {
     os.path.join(
         project_dir,
         config.LOGS_FOLDER_NAME,
-        f"success_transfer{datetime.now().strftime('%Y-%m-%d')}.log",
+        f"success_transfer_{datetime.now().strftime('%Y-%m-%d')}.log",
     ): logging.INFO,
     os.path.join(
         project_dir,
         config.LOGS_FOLDER_NAME,
-        f"detected_files{datetime.now().strftime('%Y-%m-%d')}.log",
+        f"detected_files_{datetime.now().strftime('%Y-%m-%d')}.log",
     ): logging.INFO,
     os.path.join(
         project_dir,
         config.LOGS_FOLDER_NAME,
-        f"debug{datetime.now().strftime('%Y-%m-%d')}.log",
+        f"debug_{datetime.now().strftime('%Y-%m-%d')}.log",
     ): logging.DEBUG,
 }
 
-# Split the log files for different loggers
-error_success_log_files = {
-    k: v
-    for k, v in log_files.items()
-    if "error_watchdog" in k or "success_transfer" or "debug" in k
-}
-detected_files_log_files = {k: v for k, v in log_files.items() if "detected_files" in k}
+error_or_success_logger = configure_logger("error_success_logger", log_files)
+detected_files_logger = configure_logger("detected_files_logger", log_files)
 
-error_or_success_logger = configure_logger(
-    "error_success_logger", error_success_log_files
-)
-detected_files_logger = configure_logger(
-    "detected_files_logger", detected_files_log_files
-)
+# Test logging
+error_or_success_logger.debug("Debug message")
+error_or_success_logger.info("Info message")
+error_or_success_logger.error("Error message")
+
+detected_files_logger.debug("Detected files debug message")
+detected_files_logger.info("Detected files info message")
+detected_files_logger.error("Detected files error message")
