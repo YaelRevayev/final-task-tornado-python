@@ -28,16 +28,18 @@ def classifyFiles(curr_filename: str):
     full_file_name = remove_extension(curr_filename)[:-2]
 
     try:
-        with lock:  # Acquire lock to ensure exclusive access
-            if not storage.exists(full_file_name):
-                storage.save(full_file_name, curr_filename)
-            else:
-                first_file_name = storage.get(full_file_name)
-                if first_file_name != curr_filename:
-                    files_to_send = list_files(curr_filename, first_file_name)
-                    send_http_request(curr_filename, first_file_name, files_to_send)
-                    remove_file_from_os(config.DIRECTORY_TO_WATCH, first_file_name)
-                    remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
+        # Acquire lock to ensure exclusive access
+        lock.acquire()
+        if not storage.exists(full_file_name):
+            storage.save(full_file_name, curr_filename)
+        else:
+            first_file_name = storage.get(full_file_name)
+            if first_file_name != curr_filename:
+                files_to_send = list_files(curr_filename, first_file_name)
+                send_http_request(curr_filename, first_file_name, files_to_send)
+                remove_file_from_os(config.DIRECTORY_TO_WATCH, first_file_name)
+                remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
+        lock.release()
     except Exception as e:
         error_or_success_logger.error(f"Error in classifyFiles: {e}")
 

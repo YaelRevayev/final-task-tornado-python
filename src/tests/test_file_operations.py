@@ -13,7 +13,7 @@ from file_operations import (
 )
 
 
-class TestFileFunctions(unittest.TestCase):
+class TestFileOperations(unittest.TestCase):
     @patch("builtins.open", create=True)
     def test_read_file_with_mocking_file_and_content_returns_mocked_content(
         self, mock_open

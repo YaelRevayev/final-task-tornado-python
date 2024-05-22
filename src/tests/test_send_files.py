@@ -8,7 +8,7 @@ from send_files import classifyFiles, send_http_request, get_storage
 from configs import config
 
 
-class TestMainScript(unittest.TestCase):
+class TestSendFiles(unittest.TestCase):
 
     @patch("send_files.get_storage")
     @patch("send_files.remove_extension", return_value="image100_a")
