@@ -7,7 +7,7 @@ from send_files import classifyFiles
 import os
 import subprocess
 from datetime import datetime
-from logger import detected_files_logger, error_or_success_logger
+from logger import detected_files_logger, error_or_success_logger, listener_process
 
 
 class NewFileHandler(PatternMatchingEventHandler):
@@ -51,3 +51,4 @@ def files_listener(directory):
     pool = Pool()
     scan_directory(directory, pool)
     start_watchdog(directory, pool)
+    listener_process.join()
