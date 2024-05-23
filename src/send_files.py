@@ -30,13 +30,12 @@ def classifyFiles(curr_filename: str):
     full_file_name = remove_extension(curr_filename)[:-2]
 
     try:
-        lock.acquire()
-        if not storage.exists(full_file_name):
-            storage.save(full_file_name, curr_filename)
-            error_or_success_logger.debug("no key exists")
-        else:
-            handle_existing_key(storage, full_file_name, curr_filename)
-        lock.release()
+        with lock:
+            if not storage.exists(full_file_name):
+                storage.save(full_file_name, curr_filename)
+                error_or_success_logger.debug("no key exists")
+            else:
+                handle_existing_key(storage, full_file_name, curr_filename)
     except Exception as e:
         error_or_success_logger.error(f"Error in classifyFiles: {e}")
 
