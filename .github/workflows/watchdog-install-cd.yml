@@ -11,6 +11,9 @@ on:
      vm1-password:
        description: 'Password for VM 1'
        required: true
+ push:
+      tags:
+      - 'update-fastapi-code'
 jobs:
  deploy-on-vm:
    runs-on: ubuntu-latest
