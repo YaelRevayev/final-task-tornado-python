@@ -31,8 +31,9 @@ jobs:
          password: ${{ env.VM_PASSWORD }}
          port: 22
          script: |
-            REPO_DIR="/home/${{ env.VM_USERNAME }}/${{ github.event.repository.name }}"
+            REPO_DIR="/home/${{ github.event.repository.name }}"
             echo "Installing repo"
+            cd /home/
             git clone https://github.com/${{ github.repository }}.git "$REPO_DIR"
             cd "$REPO_DIR"
             sudo mkdir logs
@@ -42,7 +43,7 @@ jobs:
             sudo chmod +x dependencies/install_packages.sh
             ./dependencies/install_packages.sh
             sudo cp $REPO_DIR/dependencies/filebeat.yml /etc/filebeat/
-            sudo systemctl start filebeat
+            sudo systemctl restart filebeat
             sudo systemctl enable filebeat
 
             sudo cp "$REPO_DIR/dependencies/watchdog.service" /etc/systemd/system/
