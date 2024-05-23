@@ -59,7 +59,6 @@ def send_http_request(filename: str, first_file_name: str, files_to_send: list):
             files=files_to_send,
         )
         error_or_success_logger.debug("sending http request...")
-        error_or_success_logger.debug(f"{files_to_send}")
         if response.status_code == 200:
             error_or_success_logger.info(f"File '{first_file_name}' sent successfully.")
             error_or_success_logger.info(f"File '{filename}' sent successfully.")
