@@ -13,7 +13,7 @@ class AppConfig:
     FILES_FOLDER_NAME: str
     LOGS_FOLDER_NAME: str
     EXPIRY_SECONDS: int
-    SCRIPT_PATH: str
+    FILE_EXPIRATION_SCRIPT_PATH: str
     STORAGE_TYPE: str
 
 
@@ -31,7 +31,7 @@ def load_config(config_file):
         FILES_FOLDER_NAME=config["FILES_FOLDER_NAME"],
         LOGS_FOLDER_NAME=config["LOGS_FOLDER_NAME"],
         EXPIRY_SECONDS=config["EXPIRY_SECONDS"],
-        SCRIPT_PATH=config["SCRIPT_PATH"],
+        FILE_EXPIRATION_SCRIPT_PATH=config["FILE_EXPIRATION_SCRIPT_PATH"],
         STORAGE_TYPE=config["STORAGE_TYPE"],
     )
 
