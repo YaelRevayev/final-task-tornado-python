@@ -54,7 +54,7 @@ log_files = {
 error_success_log_files = {
     k: v
     for k, v in log_files.items()
-    if "error_watchdog" in k or "success_transfer" in k
+    if "error_watchdog" in k or "success_transfer" in k or "debug" in k
 }
 detected_files_log_files = {k: v for k, v in log_files.items() if "detected_files" in k}
 
