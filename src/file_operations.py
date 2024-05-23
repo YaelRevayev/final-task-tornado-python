@@ -8,7 +8,7 @@ project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)
 def read_file(filename: str) -> bytes:
     error_or_success_logger.debug("reading file...")
     try:
-        with open("/{0}/{1}".format(project_dir, filename), "rb") as file:
+        with open(f"/{project_dir}/{filename}", "rb") as file:
             file_data = file.read()
         error_or_success_logger.debug(f"{filename} --> {file_data}")
         return file_data

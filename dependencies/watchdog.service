@@ -8,7 +8,7 @@ Type=simple
 User=${USER}
 # The working directory is provided via cd
 WorkingDirectory=${WORKING_DIRECTORY}
-ExecStart=/usr/bin/python3 /home/pure-ftpd-server/final-task-tornado-python/src/main.py
+ExecStart=/usr/bin/python3 /home/final-task-tornado-python/src/main.py
 Restart=on-failure
 RestartSec=10
 KillMode=control-group
