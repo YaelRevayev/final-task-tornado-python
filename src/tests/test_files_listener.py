@@ -87,7 +87,7 @@ class TestFileListener(unittest.TestCase):
         mock_pool_instance.apply_async.assert_has_calls(
             expected_apply_async_calls, any_order=True
         )
-        self.assertEqual(mock_pool_instance.apply_async.call_count, 2)
+        self.assertEqual(mock_pool_instance.apply_async.call_count, 3)
 
 
 if __name__ == "__main__":

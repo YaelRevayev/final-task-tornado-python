@@ -1,16 +1,16 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
 import os
 import sys
-
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from file_operations import (
     read_file,
     remove_extension,
-    remove_file_from_os,
+    remove_files_from_os,
     list_files,
 )
+from configs import config as config
 
 
 class TestFileOperations(unittest.TestCase):
@@ -29,13 +29,25 @@ class TestFileOperations(unittest.TestCase):
         self.assertEqual(base_filename, "image100_a")
 
     @patch("os.remove")
-    def test_remove_file_from_os_with_mocking_file_asserting_function_called_once_with_file(
+    def test_remove_files_from_os_single_file_should_call_function_1_time(
         self, mock_os_remove
     ):
-        folder_name = "test_folder"
-        file_name = "test_file.txt"
-        remove_file_from_os(folder_name, file_name)
-        mock_os_remove.assert_called_once_with("test_folder/test_file.txt")
+        filename = "test_file.txt"
+        expected_path = f"{config.DIRECTORY_TO_WATCH}/{filename}"
+        remove_files_from_os(filename)
+        mock_os_remove.assert_called_once_with(expected_path)
+
+    @patch("os.remove")
+    def test_remove_files_from_os_multiple_files_should_call_function_3_times(
+        self, mock_os_remove
+    ):
+        filenames = ["test_file1.txt", "test_file2.txt", "test_file3.txt"]
+        expected_calls = [
+            call(f"{config.DIRECTORY_TO_WATCH}/{filename}") for filename in filenames
+        ]
+        remove_files_from_os(*filenames)
+        mock_os_remove.assert_has_calls(expected_calls, any_order=True)
+        self.assertEqual(mock_os_remove.call_count, len(filenames))
 
     @patch("builtins.open", new_callable=MagicMock)
     def test_list_files_with_mocking_file_objects_adds_them_to_list(self, mock_open):

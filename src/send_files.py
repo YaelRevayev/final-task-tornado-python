@@ -2,7 +2,7 @@ import os
 import requests
 from file_operations import (
     remove_extension,
-    remove_file_from_os,
+    remove_files_from_os,
     list_files,
 )
 from redis_operations import RedisStorage
@@ -12,12 +12,14 @@ from base_storage import BaseStorage
 import multiprocessing
 
 lock = multiprocessing.Lock()
+session = requests.Session()
 
 
 def get_storage(storage_type: str) -> BaseStorage:
     if storage_type == "redis":
         return RedisStorage()
     else:
+        error_or_success_logger.error(f"Unsupported storage type: {storage_type}")
         raise ValueError(f"Unsupported storage type: {storage_type}")
 
 
@@ -26,35 +28,34 @@ def classifyFiles(curr_filename: str):
     error_or_success_logger.debug(f"opened new process for {curr_filename}")
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
-    error_or_success_logger.debug("in classify files before condition")
+
     try:
-        # Acquire lock to ensure exclusive access
         lock.acquire()
         if not storage.exists(full_file_name):
             storage.save(full_file_name, curr_filename)
             error_or_success_logger.debug("no key exists")
-            print("key not exists")
         else:
-            error_or_success_logger.debug("key does exists")
-            print("key exists")
-            first_file_name = storage.get(full_file_name)
-            if first_file_name != curr_filename:
-                files_to_send = list_files(curr_filename, first_file_name)
-                send_http_request(curr_filename, first_file_name, files_to_send)
-                remove_file_from_os(config.DIRECTORY_TO_WATCH, first_file_name)
-                remove_file_from_os(config.DIRECTORY_TO_WATCH, curr_filename)
+            handle_existing_key(storage, full_file_name, curr_filename)
         lock.release()
     except Exception as e:
         error_or_success_logger.error(f"Error in classifyFiles: {e}")
 
 
-def process_file():
-    pass
+def handle_existing_key(storage, full_file_name, curr_filename):
+    error_or_success_logger.debug("key does exists")
+    first_file_name = storage.get(full_file_name)
+
+    if first_file_name != curr_filename:
+        files_to_send = list_files(curr_filename, first_file_name)
+        send_http_request(curr_filename, first_file_name, files_to_send)
+        remove_files_from_os(first_file_name, curr_filename)
+    else:
+        error_or_success_logger.warning("Duplicate files were sent")
 
 
 def send_http_request(filename: str, first_file_name: str, files_to_send: list):
     try:
-        response = requests.post(
+        response = session.post(
             f"http://{config.HAPROXY_SERVER_IP}:{config.HAPROXY_SERVER_PORT}/merge_and_sign",
             files=files_to_send,
         )

@@ -6,8 +6,7 @@ from configs import config as config
 
 def configure_logger(logger_name: str, log_files: dict):
     logger = logging.getLogger(logger_name)
-    logger.setLevel(logging.DEBUG)  # Set the logger level to DEBUG to log all messages
-
+    logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
         "%(asctime)s - %(filename)s - %(levelname)s - %(message)s"
     )
@@ -18,7 +17,6 @@ def configure_logger(logger_name: str, log_files: dict):
         handler.setLevel(level)
         logger.addHandler(handler)
 
-    # Add a console handler for logging debug messages to the console
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
     console_handler.setFormatter(formatter)
