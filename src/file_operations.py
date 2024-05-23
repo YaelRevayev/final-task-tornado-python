@@ -9,6 +9,7 @@ def read_file(filename: str) -> bytes:
     error_or_success_logger.debug("reading file...")
     with open("/{0}/{1}".format(project_dir, filename), "rb") as file:
         file_data = file.read()
+    error_or_success_logger.debug(f"{filename} --> {file_data}")
     return file_data
 
 
