@@ -15,7 +15,7 @@ class NewFileHandler(PatternMatchingEventHandler):
         super().__init__()
         self.pool = pool
 
-    def on_created(self, event):
+    def on_modified(self, event):
         filename = event.src_path
         error_or_success_logger.debug(f"detected new file creation")
         detected_files_logger.info(f"New file detected: {os.path.basename(filename)}")
