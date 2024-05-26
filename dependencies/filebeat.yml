@@ -146,7 +146,7 @@ output.elasticsearch:
 
   index: "%{[fields.log_type]}-%{+yyyy.MM.dd}"
 
-#setup.ilm.enabled: false
+setup.ilm.enabled: false
 setup.template.enabled: true
 setup.template.name: "watchdog"  # Name of the index template
 setup.template.pattern: "watchdog-*"
