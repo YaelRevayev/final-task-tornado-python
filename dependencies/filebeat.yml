@@ -19,6 +19,7 @@ filebeat.inputs:
   fields:
     log_type: watchdog-success
 
+
 - type: log
   enabled: true
   paths:
@@ -148,6 +149,7 @@ output.elasticsearch:
   #password: "changeme"
 
   index: "%{[fields.log_type]}-%{+yyyy.MM.dd}"
+
 
 setup.ilm.enabled: false
 setup.template.enabled: true
