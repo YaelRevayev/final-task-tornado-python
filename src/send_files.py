@@ -10,6 +10,7 @@ from configs import config as config
 from logger import error_or_success_logger
 from base_storage import BaseStorage
 import multiprocessing
+import time
 
 lock = multiprocessing.Lock()
 session = requests.Session()
@@ -29,6 +30,7 @@ def classifyFiles(curr_filename: str):
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
+    wait_until_file_written(curr_filename)
     try:
         with lock:
             if not storage.exists(full_file_name):
@@ -38,6 +40,21 @@ def classifyFiles(curr_filename: str):
                 handle_existing_key(storage, full_file_name, curr_filename)
     except Exception as e:
         error_or_success_logger.error(f"Error in classifyFiles: {e}")
+
+
+def wait_until_file_written(filename: str, max_wait_time=60):
+    initial_size = os.path.getsize(filename)
+    time_waited = 0
+    while True:
+        time.sleep(1)
+        current_size = os.path.getsize(filename)
+        if current_size == initial_size:
+            time_waited += 1
+            if time_waited >= max_wait_time:
+                break
+        else:
+            initial_size = current_size
+            time_waited = 0
 
 
 def handle_existing_key(storage, full_file_name, curr_filename):
