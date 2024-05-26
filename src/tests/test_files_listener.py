@@ -25,7 +25,7 @@ class TestFileListener(unittest.TestCase):
         event.src_path = "/path/to/file.txt"
 
         handler = NewFileHandler(mock_pool_instance)
-        handler.on_created(event)
+        handler.on_closed(event)
         mock_error_or_success_logger.debug.assert_called_once_with(
             "detected new file creation"
         )
