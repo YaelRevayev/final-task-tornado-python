@@ -43,16 +43,18 @@ def classifyFiles(curr_filename: str):
 
 
 def wait_until_file_written(filename: str, max_wait_time=60):
-    start_time = time.time()
-    while time.time() - start_time < max_wait_time:
-        initial_size = os.path.getsize(filename)
+    initial_size = os.path.getsize(filename)
+    time_waited = 0
+    while True:
         time.sleep(1)
         current_size = os.path.getsize(filename)
         if current_size == initial_size:
-            return
-    error_or_success_logger.error(
-        f"File '{filename}' was not fully written within {max_wait_time} seconds"
-    )
+            time_waited += 1
+            if time_waited >= max_wait_time:
+                break
+        else:
+            initial_size = current_size
+            time_waited = 0
 
 
 def handle_existing_key(storage, full_file_name, curr_filename):
