@@ -8,7 +8,6 @@ import os
 import subprocess
 from datetime import datetime
 from logger import detected_files_logger, error_or_success_logger
-import psutil
 
 
 class NewFileHandler(PatternMatchingEventHandler):
@@ -23,19 +22,15 @@ class NewFileHandler(PatternMatchingEventHandler):
         self.pool.apply_async(self.wait_for_completion, args=(filename,))
 
     def wait_for_completion(self, filename):
-        # Wait until the file is no longer being written to
-        while self.is_file_open(filename):
+        # Wait until the file size is stable
+        stable_size = None
+        while True:
+            current_size = os.path.getsize(filename)
+            if current_size == stable_size:
+                break
+            stable_size = current_size
             time.sleep(1)  # Wait for 1 second before checking again
-        self.pool.apply_async(classifyFiles, args=(filename,))
-
-    def is_file_open(self, filename):
-        for proc in psutil.process_iter(["open_files"]):
-            try:
-                if any(file.path == filename for file in proc.info["open_files"] or []):
-                    return True
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                continue
-        return False
+        classifyFiles(filename)
 
 
 def scan_directory(directory: str, pool):
