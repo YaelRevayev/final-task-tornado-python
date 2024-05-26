@@ -42,7 +42,7 @@ def classifyFiles(curr_filename: str):
         error_or_success_logger.error(f"Error in classifyFiles: {e}")
 
 
-def wait_until_file_written(filename: str, max_wait_time=60):
+def wait_until_file_written(filename: str, max_wait_time=100):
     initial_size = os.path.getsize(filename)
     time_waited = 0
     while True:
