@@ -15,7 +15,7 @@ class NewFileHandler(FileSystemEventHandler):
         super().__init__()
         self.pool = pool
 
-    def on_modified(self, event):
+    def on_closed(self, event):
         if not event.is_directory:
             filename = event.src_path
             error_or_success_logger.debug(f"detected new file creation")
