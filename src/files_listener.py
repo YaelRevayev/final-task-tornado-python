@@ -16,7 +16,7 @@ class NewFileHandler(FileSystemEventHandler):
         self.pool = pool
 
     def on_closed(self, event):
-        if not event.is_directory:
+        if event.event_type is EVENT_TYPE_CLOSED:
             filename = event.src_path
             error_or_success_logger.debug(f"detected new file creation")
             detected_files_logger.info(
@@ -34,9 +34,7 @@ def scan_directory(directory: str, pool):
 
 def start_watchdog(directory: str, pool):
     observer = Observer()
-    observer.schedule(
-        NewFileHandler(pool), directory, recursive=True, event_mask=EVENT_TYPE_CLOSED
-    )
+    observer.schedule(NewFileHandler(pool), directory, recursive=True)
     observer.start()
     try:
         while True:
