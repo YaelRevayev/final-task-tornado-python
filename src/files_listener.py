@@ -36,6 +36,7 @@ def start_watchdog(directory: str, pool):
     try:
         while True:
             time.sleep(1)
+
     except KeyboardInterrupt:
         observer.stop()
         observer.join()
