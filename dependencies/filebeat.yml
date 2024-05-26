@@ -13,12 +13,14 @@
 # ============================== Filebeat inputs ===============================
 filebeat.inputs:
 - type: filestream
+  enabled: true
   paths:
     - /home/final-task-tornado-python/logs/success*.log
   fields:
     log_type: watchdog-success
 
 - type: filestream
+  enabled: true
   paths:
     - /home/final-task-tornado-python/logs/detected*.log
   fields:
@@ -26,6 +28,7 @@ filebeat.inputs:
 
 
 - type: filestream
+  enabled: true
   paths:
     - /home/final-task-tornado-python/logs/error*.log
   fields:
