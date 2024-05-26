@@ -34,7 +34,7 @@ jobs:
          password: ${{ env.VM_PASSWORD }}
          port: 22
          script: |
-            REPO_DIR="/home/${{ env.VM_USERNAME }}/${{ github.event.repository.name }}"
+            REPO_DIR="/home/${{ github.event.repository.name }}"
             echo "Repository exists"
             cd "$REPO_DIR"
             git reset --hard HEAD
