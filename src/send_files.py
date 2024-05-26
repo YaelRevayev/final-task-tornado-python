@@ -10,7 +10,6 @@ from configs import config as config
 from logger import error_or_success_logger
 from base_storage import BaseStorage
 import multiprocessing
-import time
 
 lock = multiprocessing.Lock()
 session = requests.Session()
@@ -22,15 +21,6 @@ def get_storage(storage_type: str) -> BaseStorage:
     else:
         error_or_success_logger.error(f"Unsupported storage type: {storage_type}")
         raise ValueError(f"Unsupported storage type: {storage_type}")
-
-
-def is_file_ready(filepath: str, wait_time: int = 1, retries: int = 10) -> bool:
-    """Check if the file is fully written and ready to be processed."""
-    for _ in range(retries):
-        if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
-            return True
-        time.sleep(wait_time)
-    return False
 
 
 def classifyFiles(curr_filename: str):
@@ -55,17 +45,9 @@ def handle_existing_key(storage, full_file_name, curr_filename):
     first_file_name = storage.get(full_file_name)
 
     if first_file_name != curr_filename:
-        first_file_path = os.path.join(config.FILES_OUTPUT_DIR, first_file_name)
-        curr_file_path = os.path.join(config.FILES_OUTPUT_DIR, curr_filename)
-
-        if is_file_ready(first_file_path) and is_file_ready(curr_file_path):
-            files_to_send = list_files(curr_file_path, first_file_path)
-            send_http_request(curr_filename, first_file_name, files_to_send)
-            remove_files_from_os(first_file_name, curr_filename)
-        else:
-            error_or_success_logger.error(
-                "One of the files is not ready to be processed."
-            )
+        files_to_send = list_files(curr_filename, first_file_name)
+        send_http_request(curr_filename, first_file_name, files_to_send)
+        remove_files_from_os(first_file_name, curr_filename)
     else:
         error_or_success_logger.warning("Duplicate files were sent")
 
