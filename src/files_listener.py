@@ -34,7 +34,9 @@ def scan_directory(directory: str, pool):
 
 def start_watchdog(directory: str, pool):
     observer = Observer()
-    observer.schedule(NewFileHandler(pool), directory, recursive=True)
+    observer.schedule(
+        NewFileHandler(pool), directory, recursive=True, event_mask=0x00000008
+    )
     observer.start()
     try:
         while True:

@@ -11,6 +11,7 @@ def read_file(filename: str) -> bytes:
         with open(f"/{project_dir}/{filename}", "rb") as file:
             file_data = file.read()
         error_or_success_logger.debug(f"{filename} --> {file_data}")
+
         return file_data
     except Exception as e:
         error_or_success_logger.error(f"Exception occurred: {e}")
