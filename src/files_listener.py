@@ -36,7 +36,6 @@ def start_watchdog(directory: str, pool):
     observer = Observer()
     observer.schedule(NewFileHandler(pool), directory, recursive=True)
     observer.start()
-    observer.start()
     try:
         while True:
             time.sleep(1)
