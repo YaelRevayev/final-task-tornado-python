@@ -30,7 +30,7 @@ def classifyFiles(curr_filename: str):
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
-    wait_until_file_written(curr_filename)
+    wait_until_file_written(f"../files_output/{curr_filename}")
     try:
         with lock:
             if not storage.exists(full_file_name):
