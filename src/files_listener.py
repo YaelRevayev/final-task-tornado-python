@@ -2,7 +2,7 @@ import time
 from configs import config as config
 from multiprocessing import Pool
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from watchdog.events import FileSystemEventHandler, IN_CLOSE_WRITE
 from send_files import classifyFiles
 import os
 import subprocess
@@ -34,7 +34,10 @@ def scan_directory(directory: str, pool):
 
 def start_watchdog(directory: str, pool):
     observer = Observer()
-    observer.schedule(NewFileHandler(pool), directory, recursive=True)
+    observer.schedule(
+        NewFileHandler(pool), directory, recursive=True, event_mask=IN_CLOSE_WRITE
+    )
+    observer.start()
     observer.start()
     try:
         while True:
