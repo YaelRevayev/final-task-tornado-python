@@ -16,10 +16,13 @@ class NewFileHandler(FileSystemEventHandler):
         self.pool = pool
 
     def on_closed(self, event):
-        filename = event.src_path
-        error_or_success_logger.debug(f"detected new file creation")
-        detected_files_logger.info(f"New file detected: {os.path.basename(filename)}")
-        self.pool.apply_async(classifyFiles, args=(filename,))
+        if not event.is_directory:
+            filename = event.src_path
+            error_or_success_logger.debug(f"detected new file creation")
+            detected_files_logger.info(
+                f"New file detected: {os.path.basename(filename)}"
+            )
+            self.pool.apply_async(classifyFiles, args=(filename,))
 
 
 def scan_directory(directory: str, pool):
