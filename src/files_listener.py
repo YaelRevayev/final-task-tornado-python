@@ -21,6 +21,12 @@ class NewFileHandler(PatternMatchingEventHandler):
         detected_files_logger.info(f"New file detected: {os.path.basename(filename)}")
         self.pool.apply_async(classifyFiles, args=(filename,))
 
+    def on_close_write(self, event):
+        if not event.is_directory:
+            error_or_success_logger.debug(
+                f"File {event.src_path} has finished being written."
+            )
+
 
 def scan_directory(directory: str, pool):
     files = os.listdir(directory)
