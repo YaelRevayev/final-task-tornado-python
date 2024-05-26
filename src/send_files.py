@@ -23,6 +23,7 @@ def get_storage(storage_type: str) -> BaseStorage:
         raise ValueError(f"Unsupported storage type: {storage_type}")
 
 
+
 def classifyFiles(curr_filename: str):
     storage = get_storage(config.STORAGE_TYPE)
     error_or_success_logger.debug(f"opened new process for {curr_filename}")
