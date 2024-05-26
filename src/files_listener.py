@@ -2,7 +2,7 @@ import time
 from configs import config as config
 from multiprocessing import Pool
 from watchdog.observers import Observer
-from watchdog.events import PatternMatchingEventHandler
+from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
 import subprocess
@@ -10,22 +10,16 @@ from datetime import datetime
 from logger import detected_files_logger, error_or_success_logger
 
 
-class NewFileHandler(PatternMatchingEventHandler):
+class NewFileHandler(FileSystemEventHandler):
     def __init__(self, pool):
         super().__init__()
         self.pool = pool
 
-    def on_created(self, event):
+    def on_closed(self, event):
         filename = event.src_path
         error_or_success_logger.debug(f"detected new file creation")
         detected_files_logger.info(f"New file detected: {os.path.basename(filename)}")
         self.pool.apply_async(classifyFiles, args=(filename,))
-
-    def on_close_write(self, event):
-        if not event.is_directory:
-            error_or_success_logger.debug(
-                f"File {event.src_path} has finished being written."
-            )
 
 
 def scan_directory(directory: str, pool):
