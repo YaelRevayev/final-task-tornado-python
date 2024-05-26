@@ -17,20 +17,9 @@ class NewFileHandler(PatternMatchingEventHandler):
 
     def on_created(self, event):
         filename = event.src_path
-        error_or_success_logger.debug(f"Detected new file creation")
+        error_or_success_logger.debug(f"detected new file creation")
         detected_files_logger.info(f"New file detected: {os.path.basename(filename)}")
-        self.pool.apply_async(self.wait_for_completion, args=(filename,))
-
-    def wait_for_completion(self, filename):
-        # Wait until the file size is stable
-        stable_size = None
-        while True:
-            current_size = os.path.getsize(filename)
-            if current_size == stable_size:
-                break
-            stable_size = current_size
-            time.sleep(1)  # Wait for 1 second before checking again
-        classifyFiles(filename)
+        self.pool.apply_async(classifyFiles, args=(filename,))
 
 
 def scan_directory(directory: str, pool):
