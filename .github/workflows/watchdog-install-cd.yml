@@ -38,7 +38,7 @@ jobs:
             echo "Installing repo"
             cd /home/
             sudo git clone https://github.com/${{ github.repository }}.git
-            cd "$REPO_DIR"
+            cd $REPO_DIR
             sudo mkdir logs
             sudo chmod 777 logs
             sudo mkdir files_output
