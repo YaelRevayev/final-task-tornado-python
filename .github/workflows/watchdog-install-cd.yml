@@ -38,13 +38,14 @@ jobs:
             echo "Installing repo"
             cd /home/
             sudo git clone https://github.com/${{ github.repository }}.git
-            cd "$REPO_DIR"
+            cd $REPO_DIR
             sudo mkdir logs
             sudo chmod 777 logs
             sudo mkdir files_output
             sudo chmod 777 files_output
             sudo chmod +x dependencies/install_packages.sh
-            ./dependencies/install_packages.sh
+            cd /home/
+            ./$REPO_DIR/dependencies/install_packages.sh
             sudo cp $REPO_DIR/dependencies/filebeat.yml /etc/filebeat/
             sudo systemctl restart filebeat
             sudo systemctl enable filebeat
