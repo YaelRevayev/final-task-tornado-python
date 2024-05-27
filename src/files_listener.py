@@ -16,7 +16,7 @@ class NewFileHandler(FileSystemEventHandler):
         self.pool = pool
 
     def on_closed(self, event):
-        if event.event_type is EVENT_TYPE_CLOSED:
+        if not event.is_directory:
             filename = event.src_path
             error_or_success_logger.debug(f"detected new file creation")
             detected_files_logger.info(
