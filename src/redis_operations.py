@@ -14,7 +14,7 @@ class RedisStorage(AbstractBaseStorage):
         )
 
     def save(self, key: str, value: str) -> bool:
-        result = self.client.set(key, value, nx=True, ex=config.REDIS_KEY_EXPIRATION)
+        result = self.client.set(key, value, nx=True, ex=config.EXPIRY_SECONDS)
         return result
 
     def exists(self, key: str):
