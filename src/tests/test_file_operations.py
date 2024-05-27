@@ -8,7 +8,7 @@ from file_operations import (
     read_file,
     remove_extension,
     remove_files_from_os,
-    list_files,
+    list_files_by_request_format,
 )
 from configs import config as config
 
@@ -60,7 +60,7 @@ class TestFileOperations(unittest.TestCase):
         mock_first_file = MagicMock()
         mock_first_file.__enter__().read.return_value = expected_content_first
         mock_open.side_effect = [mock_curr_file, mock_first_file]
-        result = list_files(curr_file, first_file)
+        result = list_files_by_request_format(curr_file, first_file)
         expected_result = [
             ("files", (curr_file, expected_content_curr)),
             ("files", (first_file, expected_content_first)),

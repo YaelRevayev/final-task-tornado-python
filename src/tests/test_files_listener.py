@@ -11,12 +11,12 @@ from send_files import classifyFiles
 class TestFileListener(unittest.TestCase):
 
     @patch("files_listener.detected_files_logger")
-    @patch("files_listener.error_or_success_logger")
+    @patch("files_listener.application_info_logger")
     @patch("files_listener.Pool")
     def test_on_created_mocking_creation_of_one_file_logger_should_be_called_once(
         self,
         mock_pool,
-        mock_error_or_success_logger,
+        mock_application_info_logger,
         mock_detected_files_logger,
     ):
         mock_pool_instance = mock_pool.return_value
@@ -26,7 +26,7 @@ class TestFileListener(unittest.TestCase):
 
         handler = NewFileHandler(mock_pool_instance)
         handler.on_closed(event)
-        mock_error_or_success_logger.debug.assert_called_once_with(
+        mock_application_info_logger.debug.assert_called_once_with(
             "detected new file creation"
         )
         mock_detected_files_logger.info.assert_called_once_with(
