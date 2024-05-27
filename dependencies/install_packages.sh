@@ -7,10 +7,6 @@ sudo apt-get update
 # Install prerequisites for adding new repositories
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
-# Ensure necessary directories exist
-mkdir -p logs
-mkdir -p files_output
-
 # Install packages listed in packages.txt
 if [ -f packages.txt ]; then
     while IFS= read -r package; do
