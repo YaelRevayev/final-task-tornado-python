@@ -9,7 +9,7 @@ sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
 # Download and install Filebeat
-sudo wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.16.3-amd64.deb
+sudo wget -O filebeat-7.16.3-amd64.deb https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.16.3-amd64.deb
 
 sudo dpkg -i filebeat-7.16.3-amd64.deb
 
