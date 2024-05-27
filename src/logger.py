@@ -48,7 +48,7 @@ log_files = {
         project_dir,
         config.LOGS_FOLDER_NAME,
         f"general_info_{datetime.now().strftime('%Y-%m-%d')}.log",
-    ): logging.WARNING,
+    ): logging.DEBUG,
 }
 
 error_success_log_files = {
