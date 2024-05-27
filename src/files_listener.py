@@ -1,6 +1,7 @@
 import time
 from configs import config as config
 from multiprocessing import Pool
+import multiprocessing
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
@@ -8,7 +9,6 @@ import os
 import subprocess
 from logger import (
     detected_files_logger,
-    error_or_success_logger,
     application_info_logger,
 )
 
@@ -28,14 +28,14 @@ class NewFileHandler(FileSystemEventHandler):
             self.pool.apply_async(classifyFiles, args=(filename,))
 
 
-def scan_directory(directory: str, pool):
+def scan_directory(directory: str, pool: multiprocessing.Pool):
     files = os.listdir(directory)
     for file in files:
         detected_files_logger.info(f"Detected file: {file}")
         pool.apply_async(classifyFiles, args=(os.path.join(directory, file),))
 
 
-def start_watchdog(directory: str, pool):
+def start_watchdog(directory: str, pool: multiprocessing.Pool):
     observer = Observer()
     observer.schedule(NewFileHandler(pool), directory, recursive=True)
     observer.start()
