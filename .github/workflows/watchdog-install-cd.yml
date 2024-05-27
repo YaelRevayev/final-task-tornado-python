@@ -48,9 +48,7 @@ jobs:
             sudo cp $REPO_DIR/dependencies/filebeat.yml /etc/filebeat/
             sudo systemctl restart filebeat
             sudo systemctl enable filebeat
-            sudo apt update
-            sudo apt install redis-server
-            sudo systemctl start redis
+            sudo systemctl restart redis
             sudo systemctl enable redis
             sudo cp "$REPO_DIR/dependencies/watchdog.service" /etc/systemd/system/
             sudo systemctl enable watchdog
