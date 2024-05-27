@@ -9,14 +9,16 @@ sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
 # Download and install Filebeat
-curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.16.3-amd64.deb
+sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.16.3-amd64.deb
 sudo dpkg -i filebeat-7.16.3-amd64.deb
 
 # Install packages listed in packages.txt
 sudo xargs -a packages.txt apt-get install -y
 
 sudo systemctl enable pure-ftpd
-
 sudo systemctl start pure-ftpd
+
+sudo systemctl enable redis-server
+sudo systemctl start redis-server
 
 echo "All packages have been installed."
