@@ -7,7 +7,7 @@ from file_operations import (
 )
 from redis_operations import RedisStorage
 from configs import config as config
-from logger import error_or_success_logger
+from logger import error_or_success_logger, application_info_logger
 from base_storage import AbstractBaseStorage
 
 session = requests.Session()
@@ -23,14 +23,14 @@ def get_storage(storage_type: str) -> AbstractBaseStorage:
 
 def classifyFiles(curr_filename: str):
     storage = get_storage(config.STORAGE_TYPE)
-    error_or_success_logger.debug(f"opened new process for {curr_filename}")
+    application_info_logger.debug(f"opened new process for {curr_filename}")
 
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
     try:
         if storage.save(full_file_name, curr_filename):
-            error_or_success_logger.debug("no key exists, key saved")
+            application_info_logger.debug("no key exists, key saved")
         else:
             handle_existing_key(storage, full_file_name, curr_filename)
     except Exception as e:
@@ -40,7 +40,7 @@ def classifyFiles(curr_filename: str):
 def handle_existing_key(
     storage: AbstractBaseStorage, full_file_name: str, curr_filename: str
 ):
-    error_or_success_logger.debug("key does exists")
+    application_info_logger.debug("key does exists")
     first_file_name = storage.get(full_file_name)
 
     if first_file_name != curr_filename:
@@ -48,7 +48,7 @@ def handle_existing_key(
         send_http_request(curr_filename, first_file_name, files_to_send)
         remove_files_from_os(first_file_name, curr_filename)
     else:
-        error_or_success_logger.warning("Duplicate files were sent")
+        application_info_logger.warning("Duplicate files were sent")
 
 
 def send_http_request(filename: str, first_file_name: str, files_to_send: list):
@@ -57,7 +57,7 @@ def send_http_request(filename: str, first_file_name: str, files_to_send: list):
             f"http://{config.HAPROXY_SERVER_IP}:{config.HAPROXY_SERVER_PORT}/merge_and_sign",
             files=files_to_send,
         )
-        error_or_success_logger.debug("sending http request...")
+        application_info_logger.debug("sending http request...")
         if response.status_code == 200:
             error_or_success_logger.info(f"File '{first_file_name}' sent successfully.")
             error_or_success_logger.info(f"File '{filename}' sent successfully.")

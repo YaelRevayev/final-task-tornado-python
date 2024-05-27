@@ -47,18 +47,19 @@ log_files = {
     os.path.join(
         project_dir,
         config.LOGS_FOLDER_NAME,
-        f"debug_{datetime.now().strftime('%Y-%m-%d')}.log",
-    ): logging.DEBUG,
+        f"general_info_{datetime.now().strftime('%Y-%m-%d')}.log",
+    ): logging.WARNING,
 }
 
 error_success_log_files = {
     k: v
     for k, v in log_files.items()
-    if "error_watchdog" in k or "success_transfer" in k or "debug" in k
+    if "error_watchdog" in k or "success_transfer" in k
 }
 detected_files_log_files = {k: v for k, v in log_files.items() if "detected_files" in k}
-
+application_info_log_file = {k: v for k, v in log_files.items() if "general_info" in k}
 error_or_success_logger = configure_logger("error_or_success", error_success_log_files)
 detected_files_logger = configure_logger(
     "detected_files_logger", detected_files_log_files
 )
+application_info_logger = configure_logger("general_info", application_info_log_file)

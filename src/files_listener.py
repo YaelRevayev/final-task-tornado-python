@@ -6,7 +6,11 @@ from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
 import subprocess
-from logger import detected_files_logger, error_or_success_logger
+from logger import (
+    detected_files_logger,
+    error_or_success_logger,
+    application_info_logger,
+)
 
 
 class NewFileHandler(FileSystemEventHandler):
@@ -17,7 +21,7 @@ class NewFileHandler(FileSystemEventHandler):
     def on_closed(self, event):
         if not event.is_directory:
             filename = event.src_path
-            error_or_success_logger.debug(f"detected new file creation")
+            application_info_logger.debug(f"detected new file creation")
             detected_files_logger.info(
                 f"New file detected: {os.path.basename(filename)}"
             )
@@ -45,7 +49,7 @@ def start_watchdog(directory: str, pool):
 
 
 def listen_for_file_expiration():
-    error_or_success_logger.debug(f"Starting script monitoring file created over 1m")
+    application_info_logger.debug(f"Starting script monitoring file created over 1m")
     subprocess.run(
         ["bash", config.FILE_EXPIRATION_SCRIPT_PATH, config.DIRECTORY_TO_WATCH]
     )
