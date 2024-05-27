@@ -37,7 +37,7 @@ jobs:
             REPO_DIR="/home/${{ github.event.repository.name }}"
             echo "Installing repo"
             cd /home/
-            git clone https://github.com/${{ github.repository }}.git "$REPO_DIR"
+            sudo git clone https://github.com/${{ github.repository }}.git
             cd "$REPO_DIR"
             sudo mkdir logs
             sudo chmod 777 logs
