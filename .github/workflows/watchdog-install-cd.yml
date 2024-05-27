@@ -1,61 +1,78 @@
 name: install-code
 on:
- workflow_dispatch:
-   inputs:
-     vm1-host:
-       description: 'Host for VM 1'
-       required: true
-     vm1-username:
-       description: 'Username for VM 1'
-       required: true
-     vm1-password:
-       description: 'Password for VM 1'
-       required: true
- push:
-      tags:
+  workflow_dispatch:
+    inputs:
+      vm1-host:
+        description: 'Host for VM 1'
+        required: true
+      vm1-username:
+        description: 'Username for VM 1'
+        required: true
+      vm1-password:
+        description: 'Password for VM 1'
+        required: true
+  push:
+    tags:
       - 'install-watchdog-code'
+
 jobs:
- deploy-on-vm:
-   runs-on: ubuntu-latest
-   strategy:
-     matrix:
-       vm_index: [1]
-   steps:
-     - name: Set up environment variables
-       run: |
-         echo "VM_HOST=${{ github.event.inputs[format('vm{0}-host', matrix.vm_index)] }}" >> $GITHUB_ENV
-         echo "VM_USERNAME=${{ github.event.inputs[format('vm{0}-username', matrix.vm_index)] }}" >> $GITHUB_ENV
-         echo "VM_PASSWORD=${{ github.event.inputs[format('vm{0}-password', matrix.vm_index)] }}" >> $GITHUB_ENV
-     - name: Execute commands on VM
-       uses: appleboy/ssh-action@v1.0.3
-       with:
-         host: ${{ env.VM_HOST }}
-         username: ${{ env.VM_USERNAME }}
-         password: ${{ env.VM_PASSWORD }}
-         port: 22
-         script: |
+  deploy-on-vm:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        vm_index: [1]
+    steps:
+      - name: Set up environment variables
+        run: |
+          echo "VM_HOST=${{ github.event.inputs[format('vm{0}-host', matrix.vm_index)] }}" >> $GITHUB_ENV
+          echo "VM_USERNAME=${{ github.event.inputs[format('vm{0}-username', matrix.vm_index)] }}" >> $GITHUB_ENV
+          echo "VM_PASSWORD=${{ github.event.inputs[format('vm{0}-password', matrix.vm_index)] }}" >> $GITHUB_ENV
+      - name: Execute commands on VM
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ env.VM_HOST }}
+          username: ${{ env.VM_USERNAME }}
+          password: ${{ env.VM_PASSWORD }}
+          port: 22
+          script: |
             REPO_DIR="/home/${{ github.event.repository.name }}"
             echo "Installing repo"
-            cd /home/
-            sudo git clone https://github.com/${{ github.repository }}.git
+            
+            # Ensure directories exist
+            if [ ! -d "$REPO_DIR" ]; then
+              sudo git clone https://github.com/${{ github.repository }}.git $REPO_DIR
+            fi
+            
             cd $REPO_DIR
-            sudo mkdir logs
-            sudo chmod 777 logs
-            sudo mkdir files_output
-            sudo chmod 777 files_output
-            sudo chmod +x dependencies/install_packages.sh
-            cd /home/
+            mkdir -p logs
+            chmod 777 logs
+            mkdir -p files_output
+            chmod 777 files_output
+            
+            # Ensure install script is executable
+            chmod +x dependencies/install_packages.sh
+            
+            # Run the install script
             /home/final-task-tornado-python/dependencies/install_packages.sh
+            
+            # Download and install Filebeat
+            sudo wget -P /home/ https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.16.3-amd64.deb
+            sudo dpkg -i /home/filebeat-7.16.3-amd64.deb
+            
+            # Configure and start Filebeat
             sudo cp $REPO_DIR/dependencies/filebeat.yml /etc/filebeat/
             sudo systemctl restart filebeat
             sudo systemctl enable filebeat
-            sudo systemctl restart redis
-            sudo systemctl enable redis
+            
+            # Configure and start watchdog service
             sudo cp "$REPO_DIR/dependencies/watchdog.service" /etc/systemd/system/
-            sudo systemctl enable watchdog
             sudo sed -i "s|\${USER}|${{ env.VM_USERNAME }}|g" /etc/systemd/system/watchdog.service
             sudo sed -i "s|\${WORKING_DIRECTORY}|$REPO_DIR|g" /etc/systemd/system/watchdog.service
-            cd "$REPO_DIR"
-            python3 -m pip install -r requirements.txt
+            
+            # Install Python dependencies
+            sudo apt-get install -y python3-pip
+            python3 -m pip install -r $REPO_DIR/requirements.txt
+            
             sudo systemctl daemon-reload
             sudo systemctl restart watchdog
+            
