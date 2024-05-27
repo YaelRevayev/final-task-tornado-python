@@ -3,20 +3,17 @@ import requests
 from file_operations import (
     remove_extension,
     remove_files_from_os,
-    list_files,
+    list_files_by_request_format,
 )
 from redis_operations import RedisStorage
 from configs import config as config
 from logger import error_or_success_logger
-from base_storage import BaseStorage
-import multiprocessing
-import time
+from base_storage import AbstractBaseStorage
 
-lock = multiprocessing.Lock()
 session = requests.Session()
 
 
-def get_storage(storage_type: str) -> BaseStorage:
+def get_storage(storage_type: str) -> AbstractBaseStorage:
     if storage_type == "redis":
         return RedisStorage()
     else:
@@ -27,26 +24,27 @@ def get_storage(storage_type: str) -> BaseStorage:
 def classifyFiles(curr_filename: str):
     storage = get_storage(config.STORAGE_TYPE)
     error_or_success_logger.debug(f"opened new process for {curr_filename}")
+
     curr_filename = os.path.basename(curr_filename)
     full_file_name = remove_extension(curr_filename)[:-2]
 
     try:
-        with lock:
-            if not storage.exists(full_file_name):
-                storage.save(full_file_name, curr_filename)
-                error_or_success_logger.debug("no key exists")
-            else:
-                handle_existing_key(storage, full_file_name, curr_filename)
+        if storage.save(full_file_name, curr_filename):
+            error_or_success_logger.debug("no key exists, key saved")
+        else:
+            handle_existing_key(storage, full_file_name, curr_filename)
     except Exception as e:
         error_or_success_logger.error(f"Error in classifyFiles: {e}")
 
 
-def handle_existing_key(storage, full_file_name, curr_filename):
+def handle_existing_key(
+    storage: AbstractBaseStorage, full_file_name: str, curr_filename: str
+):
     error_or_success_logger.debug("key does exists")
     first_file_name = storage.get(full_file_name)
 
     if first_file_name != curr_filename:
-        files_to_send = list_files(curr_filename, first_file_name)
+        files_to_send = list_files_by_request_format(curr_filename, first_file_name)
         send_http_request(curr_filename, first_file_name, files_to_send)
         remove_files_from_os(first_file_name, curr_filename)
     else:

@@ -27,7 +27,7 @@ def remove_files_from_os(*filenames):
         os.remove((f"{config.DIRECTORY_TO_WATCH}/{filename}"))
 
 
-def list_files(curr_file: str, first_file: str) -> list:
+def list_files_by_request_format(curr_file: str, first_file: str) -> list:
     files_to_send = []
     files_to_send.append(
         ("files", (curr_file, read_file(f"{config.FILES_FOLDER_NAME}/{curr_file}")))

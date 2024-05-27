@@ -1,9 +1,9 @@
 import redis
 from configs import config
-from base_storage import BaseStorage
+from base_storage import AbstractBaseStorage
 
 
-class RedisStorage(BaseStorage):
+class RedisStorage(AbstractBaseStorage):
     def __init__(self):
         self.client = redis.StrictRedis(
             host=config.REDIS_HOST_IP,
@@ -13,8 +13,9 @@ class RedisStorage(BaseStorage):
             retry_on_timeout=True,
         )
 
-    def save(self, key: str, value: str):
-        self.client.set(key, value, ex=config.EXPIRY_SECONDS)
+    def save(self, key: str, value: str) -> bool:
+        result = self.client.set(key, value, nx=True, ex=config.REDIS_KEY_EXPIRATION)
+        return result
 
     def exists(self, key: str):
         return self.client.exists(key)

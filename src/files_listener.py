@@ -2,11 +2,10 @@ import time
 from configs import config as config
 from multiprocessing import Pool
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, EVENT_TYPE_CLOSED
+from watchdog.events import FileSystemEventHandler
 from send_files import classifyFiles
 import os
 import subprocess
-from datetime import datetime
 from logger import detected_files_logger, error_or_success_logger
 
 
