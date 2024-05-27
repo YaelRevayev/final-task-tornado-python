@@ -7,7 +7,7 @@ sudo apt-get update
 
 # Install prerequisites for adding new repositories
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-
+sudo so
 # Download and install Filebeat
 sudo wget -P /home/ https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.16.3-amd64.deb
 
